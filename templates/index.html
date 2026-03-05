@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Interactive Physics Lab</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <link href="/static/styles.css?v=2" rel="stylesheet" />
 
   <script>
     tailwind.config = {
@@ -26,7 +30,10 @@
   </script>
 
   <style>
-    body { font-family: 'Public Sans', sans-serif; }
+    body {
+      font-family: 'Public Sans', sans-serif;
+    }
+
     .canvas-bg {
       background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
       background-size: 20px 20px;
@@ -37,31 +44,36 @@
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
   <div class="flex flex-col h-screen overflow-hidden">
     <!-- Header -->
-    <header class="flex items-center justify-between px-6 py-3 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-primary/20 shrink-0">
+    <header
+      class="flex items-center justify-between px-6 py-3 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-primary/20 shrink-0">
       <div class="flex items-center gap-3">
         <div class="bg-primary p-1.5 rounded-lg text-white">
           <span class="material-symbols-outlined block">science</span>
         </div>
         <div class="flex flex-col leading-tight">
           <h1 class="text-xl font-bold tracking-tight">Interactive Physics Lab</h1>
-          <span id="activeExperimentName" class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tracking-wide"></span>
+          <span id="activeExperimentName"
+            class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tracking-wide"></span>
         </div>
       </div>
 
       <nav class="hidden md:flex items-center gap-6">
         <div class="relative">
-          <button id="expMenuBtn" class="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors">
+          <button id="expMenuBtn"
+            class="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors">
             Experiments <span class="material-symbols-outlined text-sm">expand_more</span>
           </button>
           <div id="expMenuList"
-               class="hidden absolute top-full mt-2 right-0 w-72 bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
+            class="hidden absolute top-full mt-2 right-0 w-72 bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
             <div id="expMenuItems" class="p-2"></div>
           </div>
         </div>
 
-        <div id="statusChip" class="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+        <div id="statusChip"
+          class="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
           <span class="relative flex h-2 w-2">
-            <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span id="statusPing"
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
           </span>
           <span id="statusText">Simulation: Running</span>
@@ -80,7 +92,8 @@
 
     <div class="flex flex-1 overflow-hidden">
       <!-- Left Sidebar -->
-      <aside class="w-72 bg-white dark:bg-background-dark border-r border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
+      <aside
+        class="w-72 bg-white dark:bg-background-dark border-r border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
         <div class="p-4 space-y-6">
           <div>
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Experiment Controls</h3>
@@ -103,6 +116,23 @@
             </div>
           </div>
 
+          <!-- File Manager -->
+          <div>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">File Manager</h3>
+            <div id="fileDropZone" class="file-drop-zone mb-3">
+              <span class="material-symbols-outlined text-slate-400 text-2xl mb-1 block">upload_file</span>
+              <span class="text-xs text-slate-500">Click or drag a file here</span>
+              <input id="fileInput" type="file" class="hidden" />
+            </div>
+            <button id="uploadBtn"
+              class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all text-xs font-bold mb-3 disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled>
+              <span class="material-symbols-outlined text-sm">cloud_upload</span>
+              Upload Selected File
+            </button>
+            <div id="fileList" class="space-y-2 max-h-48 overflow-y-auto"></div>
+          </div>
+
           <div class="pt-2">
             <div class="text-[10px] text-slate-400 leading-relaxed">
               All operations powered by FastAPI backend.
@@ -119,8 +149,9 @@
 
             <!-- Placeholder overlay -->
             <div id="placeholderOverlay"
-                 class="hidden absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-black/40 backdrop-blur-[1px] z-40">
-              <div class="max-w-md p-6 rounded-2xl bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 shadow-xl text-center">
+              class="hidden absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-black/40 backdrop-blur-[1px] z-40">
+              <div
+                class="max-w-md p-6 rounded-2xl bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 shadow-xl text-center">
                 <div class="flex items-center justify-center mb-3">
                   <span class="material-symbols-outlined text-primary text-3xl">construction</span>
                 </div>
@@ -132,9 +163,11 @@
             </div>
 
             <!-- Left Rod (Glass) -->
-            <div id="glassRig" class="flex flex-col items-center" style="transform: rotate(2deg); transform-origin: top center;">
+            <div id="glassRig" class="flex flex-col items-center"
+              style="transform: rotate(2deg); transform-origin: top center;">
               <div class="w-1 h-32 bg-slate-300 dark:bg-slate-700 origin-top"></div>
-              <div class="w-4 h-48 bg-sky-200/50 dark:bg-sky-400/20 border-2 border-sky-300/50 rounded-full shadow-lg -mt-1 flex flex-col items-center justify-around py-4">
+              <div
+                class="w-4 h-48 bg-sky-200/50 dark:bg-sky-400/20 border-2 border-sky-300/50 rounded-full shadow-lg -mt-1 flex flex-col items-center justify-around py-4">
                 <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
                 <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
                 <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
@@ -143,9 +176,11 @@
             </div>
 
             <!-- Right Rod (Plastic) -->
-            <div id="plasticRig" class="flex flex-col items-center" style="transform: rotate(-2deg); transform-origin: top center;">
+            <div id="plasticRig" class="flex flex-col items-center"
+              style="transform: rotate(-2deg); transform-origin: top center;">
               <div class="w-1 h-32 bg-slate-300 dark:bg-slate-700 origin-top"></div>
-              <div class="w-4 h-48 bg-amber-900/40 border-2 border-amber-950/20 rounded-full shadow-lg -mt-1 flex flex-col items-center justify-around py-4">
+              <div
+                class="w-4 h-48 bg-amber-900/40 border-2 border-amber-950/20 rounded-full shadow-lg -mt-1 flex flex-col items-center justify-around py-4">
                 <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
                 <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
                 <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
@@ -155,20 +190,23 @@
 
             <!-- Prop Cloths -->
             <div class="absolute bottom-10 left-10 text-center">
-              <div class="w-12 h-12 bg-white dark:bg-white/10 rounded-lg shadow-sm flex items-center justify-center border border-slate-200 dark:border-white/10 mb-2">
+              <div
+                class="w-12 h-12 bg-white dark:bg-white/10 rounded-lg shadow-sm flex items-center justify-center border border-slate-200 dark:border-white/10 mb-2">
                 <span class="material-symbols-outlined text-sky-400">grid_guides</span>
               </div>
               <span class="text-[10px] font-bold text-slate-400 uppercase">Silk</span>
             </div>
             <div class="absolute bottom-10 right-10 text-center">
-              <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg shadow-sm flex items-center justify-center border border-amber-200 dark:border-amber-900/50 mb-2">
+              <div
+                class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg shadow-sm flex items-center justify-center border border-amber-200 dark:border-amber-900/50 mb-2">
                 <span class="material-symbols-outlined text-amber-700">texture</span>
               </div>
               <span class="text-[10px] font-bold text-slate-400 uppercase">Wool</span>
             </div>
 
             <!-- Force Arrow -->
-            <div id="forceGroup" class="absolute top-[280px] left-1/2 -translate-x-1/2 flex items-center gap-4" style="display:none;">
+            <div id="forceGroup" class="absolute top-[280px] left-1/2 -translate-x-1/2 flex items-center gap-4"
+              style="display:none;">
               <div class="w-16 h-0.5 bg-primary relative flex items-center">
                 <div class="absolute -left-1 w-2 h-2 rotate-45 border-l-2 border-b-2 border-primary"></div>
               </div>
@@ -181,7 +219,8 @@
         </div>
 
         <!-- System Log -->
-        <div class="h-32 bg-white dark:bg-background-dark border-t border-slate-200 dark:border-primary/20 p-3 overflow-hidden flex flex-col">
+        <div
+          class="h-32 bg-white dark:bg-background-dark border-t border-slate-200 dark:border-primary/20 p-3 overflow-hidden flex flex-col">
           <div class="flex items-center gap-2 mb-2">
             <span class="material-symbols-outlined text-xs text-slate-400">terminal</span>
             <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Log</h4>
@@ -191,7 +230,8 @@
       </main>
 
       <!-- Right Panel -->
-      <aside class="w-80 bg-white dark:bg-background-dark border-l border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
+      <aside
+        class="w-80 bg-white dark:bg-background-dark border-l border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
         <div class="p-6 space-y-8">
           <div>
             <h2 class="text-lg font-bold mb-3 flex items-center gap-2">
@@ -211,17 +251,21 @@
           <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Readouts</h3>
             <div class="space-y-2">
-              <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+              <div
+                class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
                 <span class="text-xs font-medium text-slate-500">Total Force (F)</span>
                 <span id="forceReadout" class="text-sm font-mono font-bold text-primary">0.000 N</span>
               </div>
-              <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+              <div
+                class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
                 <span class="text-xs font-medium text-slate-500">Glass Charge (Q1)</span>
                 <span id="q1Readout" class="text-sm font-mono font-bold text-sky-600 dark:text-sky-400">+0.0 µC</span>
               </div>
-              <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+              <div
+                class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
                 <span class="text-xs font-medium text-slate-500">Plastic Charge (Q2)</span>
-                <span id="q2Readout" class="text-sm font-mono font-bold text-amber-700 dark:text-amber-500">0.0 µC</span>
+                <span id="q2Readout" class="text-sm font-mono font-bold text-amber-700 dark:text-amber-500">0.0
+                  µC</span>
               </div>
             </div>
           </div>
@@ -275,6 +319,7 @@
     </div>
   </div>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=2"></script>
 </body>
+
 </html>

@@ -114,6 +114,20 @@ def public_file(token: str, db: Session = Depends(get_db)):
     return FileResponse(full_path, media_type=rec.mime_type, filename=rec.original_name)
 
 
+@router.delete("/api/files/{file_id}")
+def delete_file(file_id: str, request: Request, response: Response, db: Session = Depends(get_db)):
+    sid = ensure_session(request, response)
+    rec = db.query(UploadedFile).filter(UploadedFile.id == file_id, UploadedFile.session_id == sid).first()
+    if not rec:
+        return {"error": "not_found"}
+    full_path = os.path.join(UPLOAD_DIR, rec.path)
+    if os.path.isfile(full_path):
+        os.remove(full_path)
+    db.delete(rec)
+    db.commit()
+    return {"ok": True}
+
+
 def _ser(rec: UploadedFile) -> dict:
     return {
         "id": rec.id,

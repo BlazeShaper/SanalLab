@@ -1,0 +1,78 @@
+/* Interactive Physics Lab — additional styles */
+
+/* File manager upload area */
+.file-drop-zone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+  transition: border-color 0.2s, background-color 0.2s;
+  cursor: pointer;
+}
+.file-drop-zone:hover,
+.file-drop-zone.dragover {
+  border-color: #ec5b13;
+  background-color: rgba(236, 91, 19, 0.04);
+}
+.dark .file-drop-zone {
+  border-color: rgba(255,255,255,0.1);
+}
+.dark .file-drop-zone:hover,
+.dark .file-drop-zone.dragover {
+  border-color: #ec5b13;
+  background-color: rgba(236, 91, 19, 0.08);
+}
+
+/* Subtle fade-in animation for dynamically loaded content */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.25s ease-out both;
+}
+
+/* File list items */
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 0.75rem;
+  transition: background 0.15s;
+}
+.file-item:hover {
+  background: #f8fafc;
+}
+.dark .file-item {
+  border-color: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+}
+.dark .file-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+.file-item .file-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.file-item .file-del-btn {
+  flex-shrink: 0;
+  color: #ef4444;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.file-item .file-del-btn:hover {
+  background: rgba(239,68,68,0.1);
+}

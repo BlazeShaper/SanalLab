@@ -29,35 +29,51 @@ async function api(path, opts = {}) {
   return res.json();
 }
 
+/** Upload helper — does NOT set Content-Type so browser adds multipart boundary */
+async function apiUpload(path, formData) {
+  const res = await fetch(path, {
+    method: "POST",
+    credentials: "same-origin",
+    body: formData,
+  });
+  return res.json();
+}
+
 // ─── DOM Refs ───────────────────────────────────────────────────────
-const controlsMount       = $("#controlsMount");
-const placeholderOverlay   = $("#placeholderOverlay");
+const controlsMount = $("#controlsMount");
+const placeholderOverlay = $("#placeholderOverlay");
 const activeExperimentName = $("#activeExperimentName");
-const statusText           = $("#statusText");
-const statusPing           = $("#statusPing");
-const glassRig             = $("#glassRig");
-const plasticRig           = $("#plasticRig");
-const forceGroup           = $("#forceGroup");
-const forceLabel           = $("#forceLabel");
-const forceReadout         = $("#forceReadout");
-const q1Readout            = $("#q1Readout");
-const q2Readout            = $("#q2Readout");
-const logList              = $("#logList");
-const pauseBtn             = $("#pauseBtn");
-const pauseIcon            = $("#pauseIcon");
-const pauseText            = $("#pauseText");
-const resetBtn             = $("#resetBtn");
-const expMenuBtn           = $("#expMenuBtn");
-const expMenuList          = $("#expMenuList");
-const expMenuItems         = $("#expMenuItems");
-const learningSummary      = $("#learningSummary");
-const coreConcepts         = $("#coreConcepts");
-const addToReportBtn       = $("#addToReportBtn");
-const exportReportBtn      = $("#exportReportBtn");
-const reportItemsList      = $("#reportItemsList");
-const reportTitleInput     = $("#reportTitleInput");
-const expressionSelect     = $("#expressionSelect");
-const reportHint           = $("#reportHint");
+const statusText = $("#statusText");
+const statusPing = $("#statusPing");
+const glassRig = $("#glassRig");
+const plasticRig = $("#plasticRig");
+const forceGroup = $("#forceGroup");
+const forceLabel = $("#forceLabel");
+const forceReadout = $("#forceReadout");
+const q1Readout = $("#q1Readout");
+const q2Readout = $("#q2Readout");
+const logList = $("#logList");
+const pauseBtn = $("#pauseBtn");
+const pauseIcon = $("#pauseIcon");
+const pauseText = $("#pauseText");
+const resetBtn = $("#resetBtn");
+const expMenuBtn = $("#expMenuBtn");
+const expMenuList = $("#expMenuList");
+const expMenuItems = $("#expMenuItems");
+const learningSummary = $("#learningSummary");
+const coreConcepts = $("#coreConcepts");
+const addToReportBtn = $("#addToReportBtn");
+const exportReportBtn = $("#exportReportBtn");
+const reportItemsList = $("#reportItemsList");
+const reportTitleInput = $("#reportTitleInput");
+const expressionSelect = $("#expressionSelect");
+const reportHint = $("#reportHint");
+
+// File Manager
+const fileDropZone = $("#fileDropZone");
+const fileInput = $("#fileInput");
+const uploadBtn = $("#uploadBtn");
+const fileList = $("#fileList");
 
 // ─── App State (client-side mirror) ─────────────────────────────────
 const local = {
@@ -102,14 +118,14 @@ function applyComputed(computed) {
   if (!computed) return;
 
   forceReadout.textContent = computed.forceFormatted || "0.000 N";
-  q1Readout.textContent    = computed.q1Formatted || "+0.0 µC";
-  q2Readout.textContent    = computed.q2Formatted || "0.0 µC";
-  forceLabel.textContent   = computed.forceLabel || "";
+  q1Readout.textContent = computed.q1Formatted || "+0.0 µC";
+  q2Readout.textContent = computed.q2Formatted || "0.0 µC";
+  forceLabel.textContent = computed.forceLabel || "";
 
-  local.glassTarget   = computed.glassTarget ?? 2;
+  local.glassTarget = computed.glassTarget ?? 2;
   local.plasticTarget = computed.plasticTarget ?? -2;
-  local.showCharges   = computed.showCharges ?? true;
-  local.showForces    = computed.showForces ?? false;
+  local.showCharges = computed.showCharges ?? true;
+  local.showForces = computed.showForces ?? false;
 
   $(".charge-symbol", undefined)  // handled below
   $$(".charge-symbol").forEach(el => { el.style.display = local.showCharges ? "" : "none"; });
@@ -351,7 +367,7 @@ function tick(t) {
     local.plasticVel += pAcc * dt;
     local.plasticAngleDeg += local.plasticVel * dt;
 
-    glassRig.style.transform   = `rotate(${local.glassAngleDeg}deg)`;
+    glassRig.style.transform = `rotate(${local.glassAngleDeg}deg)`;
     plasticRig.style.transform = `rotate(${local.plasticAngleDeg}deg)`;
   }
 
@@ -459,12 +475,92 @@ function setReportUIEnabled(isEnabled) {
     : `Report capture is disabled in placeholder modules. Switch to <b>Electrostatics</b>.`;
 }
 
+// ─── File Manager ───────────────────────────────────────────────────
+let selectedFile = null;
+
+fileDropZone.addEventListener("click", () => fileInput.click());
+fileDropZone.addEventListener("dragover", e => { e.preventDefault(); fileDropZone.classList.add("dragover"); });
+fileDropZone.addEventListener("dragleave", () => fileDropZone.classList.remove("dragover"));
+fileDropZone.addEventListener("drop", e => {
+  e.preventDefault();
+  fileDropZone.classList.remove("dragover");
+  if (e.dataTransfer.files.length) {
+    selectedFile = e.dataTransfer.files[0];
+    uploadBtn.disabled = false;
+    fileDropZone.querySelector("span:last-child").textContent = selectedFile.name;
+  }
+});
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length) {
+    selectedFile = fileInput.files[0];
+    uploadBtn.disabled = false;
+    fileDropZone.querySelector("span:last-child").textContent = selectedFile.name;
+  }
+});
+
+uploadBtn.addEventListener("click", async () => {
+  if (!selectedFile) return;
+  uploadBtn.disabled = true;
+  const fd = new FormData();
+  fd.append("file", selectedFile);
+  const result = await apiUpload("/api/files/upload", fd);
+  if (result.error) {
+    addLog("Upload failed: " + result.error, "info");
+  } else {
+    addLog("File uploaded: " + (result.original_name || selectedFile.name), "primary");
+  }
+  selectedFile = null;
+  fileInput.value = "";
+  fileDropZone.querySelector("span:last-child").textContent = "Click or drag a file here";
+  loadFiles();
+});
+
+async function loadFiles() {
+  try {
+    const files = await api("/api/files");
+    renderFiles(files);
+  } catch { renderFiles([]); }
+}
+
+function renderFiles(files) {
+  fileList.innerHTML = "";
+  if (!files || files.length === 0) {
+    fileList.innerHTML = `<div class="text-xs text-slate-400 italic">No uploaded files.</div>`;
+    return;
+  }
+  files.forEach(f => {
+    const div = document.createElement("div");
+    div.className = "file-item fade-in";
+    div.innerHTML = `
+      <span class="file-name" title="${escapeHtml(f.original_name)}">${escapeHtml(f.original_name)}</span>
+      <button class="file-del-btn" data-id="${f.id}" title="Delete">
+        <span class="material-symbols-outlined" style="font-size:16px">delete</span>
+      </button>`;
+    fileList.appendChild(div);
+  });
+}
+
+fileList.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".file-del-btn");
+  if (!btn) return;
+  const fileId = btn.dataset.id;
+  await api(`/api/files/${fileId}`, { method: "DELETE" });
+  addLog("File deleted.", "info");
+  loadFiles();
+});
+
 // ─── Boot ───────────────────────────────────────────────────────────
 async function boot() {
-  await loadExperimentsList();
-  await mountExperiment("electrostatics");
-  loadReportItems();
-  requestAnimationFrame(tick);
+  try {
+    await loadExperimentsList();
+    await mountExperiment("electrostatics");
+    loadReportItems();
+    loadFiles();
+    requestAnimationFrame(tick);
+  } catch (err) {
+    console.error("Boot error:", err);
+    addLog("Failed to initialize — check backend connection.", "info");
+  }
 }
 
 boot();
