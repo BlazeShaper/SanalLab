@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Interactive Physics Lab</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#ec5b13",
+            "background-light": "#f8f6f6",
+            "background-dark": "#221610",
+          },
+          fontFamily: { "display": ["Public Sans"] },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Public Sans', sans-serif; }
+    .canvas-bg {
+      background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+  <div class="flex flex-col h-screen overflow-hidden">
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-3 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-primary/20 shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary p-1.5 rounded-lg text-white">
+          <span class="material-symbols-outlined block">science</span>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <h1 class="text-xl font-bold tracking-tight">Interactive Physics Lab</h1>
+          <span id="activeExperimentName" class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tracking-wide"></span>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-6">
+        <div class="relative">
+          <button id="expMenuBtn" class="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors">
+            Experiments <span class="material-symbols-outlined text-sm">expand_more</span>
+          </button>
+          <div id="expMenuList"
+               class="hidden absolute top-full mt-2 right-0 w-72 bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
+            <div id="expMenuItems" class="p-2"></div>
+          </div>
+        </div>
+
+        <div id="statusChip" class="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+          <span class="relative flex h-2 w-2">
+            <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+          </span>
+          <span id="statusText">Simulation: Running</span>
+        </div>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors" title="Settings">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+        <div class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
+          <span class="text-primary font-bold text-xs">PI</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Left Sidebar -->
+      <aside class="w-72 bg-white dark:bg-background-dark border-r border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
+        <div class="p-4 space-y-6">
+          <div>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Experiment Controls</h3>
+            <div id="controlsMount" class="space-y-3"></div>
+          </div>
+
+          <div>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Global</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <button id="pauseBtn"
+                class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 transition-colors">
+                <span id="pauseIcon" class="material-symbols-outlined text-primary mb-1">pause_circle</span>
+                <span id="pauseText" class="text-xs font-bold">Pause</span>
+              </button>
+              <button id="resetBtn"
+                class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined text-slate-400 mb-1">replay</span>
+                <span class="text-xs font-bold">Reset</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <div class="text-[10px] text-slate-400 leading-relaxed">
+              All operations powered by FastAPI backend.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Stage -->
+      <main class="flex-1 flex flex-col bg-slate-50 dark:bg-background-dark/50 relative">
+        <div class="flex-1 canvas-bg relative overflow-hidden flex items-center justify-center">
+          <div class="relative w-[600px] h-[400px] flex items-start justify-center gap-32">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-slate-400/30 rounded-full"></div>
+
+            <!-- Placeholder overlay -->
+            <div id="placeholderOverlay"
+                 class="hidden absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-black/40 backdrop-blur-[1px] z-40">
+              <div class="max-w-md p-6 rounded-2xl bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 shadow-xl text-center">
+                <div class="flex items-center justify-center mb-3">
+                  <span class="material-symbols-outlined text-primary text-3xl">construction</span>
+                </div>
+                <h3 class="text-lg font-extrabold">Experiment module not implemented yet</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                  This is a placeholder. Select Electrostatics to see a working simulation.
+                </p>
+              </div>
+            </div>
+
+            <!-- Left Rod (Glass) -->
+            <div id="glassRig" class="flex flex-col items-center" style="transform: rotate(2deg); transform-origin: top center;">
+              <div class="w-1 h-32 bg-slate-300 dark:bg-slate-700 origin-top"></div>
+              <div class="w-4 h-48 bg-sky-200/50 dark:bg-sky-400/20 border-2 border-sky-300/50 rounded-full shadow-lg -mt-1 flex flex-col items-center justify-around py-4">
+                <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
+                <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
+                <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
+              </div>
+              <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500">Glass Rod</span>
+            </div>
+
+            <!-- Right Rod (Plastic) -->
+            <div id="plasticRig" class="flex flex-col items-center" style="transform: rotate(-2deg); transform-origin: top center;">
+              <div class="w-1 h-32 bg-slate-300 dark:bg-slate-700 origin-top"></div>
+              <div class="w-4 h-48 bg-amber-900/40 border-2 border-amber-950/20 rounded-full shadow-lg -mt-1 flex flex-col items-center justify-around py-4">
+                <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
+                <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
+                <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
+              </div>
+              <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500">Plastic Rod</span>
+            </div>
+
+            <!-- Prop Cloths -->
+            <div class="absolute bottom-10 left-10 text-center">
+              <div class="w-12 h-12 bg-white dark:bg-white/10 rounded-lg shadow-sm flex items-center justify-center border border-slate-200 dark:border-white/10 mb-2">
+                <span class="material-symbols-outlined text-sky-400">grid_guides</span>
+              </div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase">Silk</span>
+            </div>
+            <div class="absolute bottom-10 right-10 text-center">
+              <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg shadow-sm flex items-center justify-center border border-amber-200 dark:border-amber-900/50 mb-2">
+                <span class="material-symbols-outlined text-amber-700">texture</span>
+              </div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase">Wool</span>
+            </div>
+
+            <!-- Force Arrow -->
+            <div id="forceGroup" class="absolute top-[280px] left-1/2 -translate-x-1/2 flex items-center gap-4" style="display:none;">
+              <div class="w-16 h-0.5 bg-primary relative flex items-center">
+                <div class="absolute -left-1 w-2 h-2 rotate-45 border-l-2 border-b-2 border-primary"></div>
+              </div>
+              <span id="forceLabel" class="text-[10px] font-mono text-primary font-bold">Attractive Force</span>
+              <div class="w-16 h-0.5 bg-primary relative flex items-center">
+                <div class="absolute -right-1 w-2 h-2 rotate-45 border-r-2 border-t-2 border-primary"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Log -->
+        <div class="h-32 bg-white dark:bg-background-dark border-t border-slate-200 dark:border-primary/20 p-3 overflow-hidden flex flex-col">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-xs text-slate-400">terminal</span>
+            <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Log</h4>
+          </div>
+          <div id="logList" class="flex-1 overflow-y-auto font-mono text-xs space-y-1"></div>
+        </div>
+      </main>
+
+      <!-- Right Panel -->
+      <aside class="w-80 bg-white dark:bg-background-dark border-l border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
+        <div class="p-6 space-y-8">
+          <div>
+            <h2 class="text-lg font-bold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">school</span>
+              Learning Panel
+            </h2>
+            <div id="learningSummary" class="p-4 bg-primary/5 rounded-xl border border-primary/10">
+              <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">Loading…</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Core Concepts</h3>
+            <div id="coreConcepts" class="space-y-3"></div>
+          </div>
+
+          <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Readouts</h3>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+                <span class="text-xs font-medium text-slate-500">Total Force (F)</span>
+                <span id="forceReadout" class="text-sm font-mono font-bold text-primary">0.000 N</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+                <span class="text-xs font-medium text-slate-500">Glass Charge (Q1)</span>
+                <span id="q1Readout" class="text-sm font-mono font-bold text-sky-600 dark:text-sky-400">+0.0 µC</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+                <span class="text-xs font-medium text-slate-500">Plastic Charge (Q2)</span>
+                <span id="q2Readout" class="text-sm font-mono font-bold text-amber-700 dark:text-amber-500">0.0 µC</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <div class="p-4 rounded-xl bg-slate-900 text-white flex flex-col items-center text-center">
+              <p class="text-[11px] font-bold opacity-60 uppercase mb-2">Math Expression</p>
+              <div class="font-serif italic text-lg tracking-widest">F = k · (|q₁|·|q₂|) / r²</div>
+            </div>
+          </div>
+
+          <!-- Report Builder -->
+          <div class="pt-4 border-t border-slate-100 dark:border-white/5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Report Builder</h3>
+              <button id="exportReportBtn"
+                class="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                Export Report
+              </button>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-xs font-semibold text-slate-500">Report Title</label>
+              <input id="reportTitleInput"
+                class="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm"
+                value="Interactive Physics Lab Report" />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-xs font-semibold text-slate-500">Choose Expression</label>
+              <select id="expressionSelect"
+                class="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm">
+                <option value="coulomb">Coulomb's Law: F = k · (|q₁|·|q₂|) / r²</option>
+              </select>
+            </div>
+
+            <button id="addToReportBtn"
+              class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-primary text-white rounded-lg hover:brightness-95 transition-all text-sm font-bold">
+              <span class="material-symbols-outlined text-base">note_add</span>
+              Add current values to report
+            </button>
+
+            <div id="reportHint" class="text-[11px] text-slate-500 dark:text-slate-400">
+              Tip: Export sonrası dosyayı açıp tarayıcıdan <b>Print → Save as PDF</b> ile PDF alabilirsin.
+            </div>
+
+            <div id="reportItemsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
