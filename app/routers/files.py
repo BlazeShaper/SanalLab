@@ -43,7 +43,7 @@ async def upload_file(
         return {"error": f"File type {mime} not allowed."}
 
     # Read content with size cap
-    content = await file.read()
+    content: bytes = await file.read()  # type: ignore[assignment]
     if len(content) > MAX_SIZE:
         return {"error": "File too large (max 10 MB)."}
 
