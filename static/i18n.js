@@ -55,6 +55,8 @@ const TRANSLATIONS = {
         // Report builder
         "report.title": "Rapor Oluşturucu",
         "report.export": "Raporu Dışa Aktar",
+        "report.exportExcel": "Excel",
+        "report.exportHtml": "HTML",
         "report.titleLabel": "Rapor Başlığı",
         "report.defaultTitle": "İnteraktif Fizik Lab Raporu",
         "report.chooseExpression": "İfade Seçin",
@@ -160,6 +162,8 @@ const TRANSLATIONS = {
 
         "report.title": "Report Builder",
         "report.export": "Export Report",
+        "report.exportExcel": "Excel",
+        "report.exportHtml": "HTML",
         "report.titleLabel": "Report Title",
         "report.defaultTitle": "Interactive Physics Lab Report",
         "report.chooseExpression": "Choose Expression",

@@ -64,6 +64,7 @@ const learningSummary = $("#learningSummary");
 const coreConcepts = $("#coreConcepts");
 const addToReportBtn = $("#addToReportBtn");
 const exportReportBtn = $("#exportReportBtn");
+const exportExcelBtn = $("#exportExcelBtn");
 const reportItemsList = $("#reportItemsList");
 const reportTitleInput = $("#reportTitleInput");
 const expressionSelect = $("#expressionSelect");
@@ -475,6 +476,12 @@ exportReportBtn.addEventListener("click", () => {
   window.location.href = `/api/reports/export/html?title=${title}&lang=${lang}`;
 });
 
+exportExcelBtn.addEventListener("click", () => {
+  const title = encodeURIComponent(reportTitleInput.value || t("report.defaultTitle"));
+  const lang = getLang();
+  window.location.href = `/api/reports/export/xlsx?title=${title}&lang=${lang}`;
+});
+
 reportItemsList.addEventListener("click", async (e) => {
   const btn = e.target.closest(".rpt-act");
   if (!btn) return;
@@ -561,7 +568,7 @@ function renderFiles(files) {
     const div = document.createElement("div");
     div.className = "file-item fade-in";
     div.innerHTML = `
-      <span class="file-name" title="${escapeHtml(f.original_name)}">${escapeHtml(f.original_name)}</span>
+      <a href="/api/files/${f.id}" download="${escapeHtml(f.original_name)}" class="file-name hover:text-primary transition-colors cursor-pointer" title="${escapeHtml(f.original_name)}">${escapeHtml(f.original_name)}</a>
       <button class="file-del-btn" data-id="${f.id}" title="Delete">
         <span class="material-symbols-outlined" style="font-size:16px">delete</span>
       </button>`;

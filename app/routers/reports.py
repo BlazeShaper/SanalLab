@@ -167,18 +167,13 @@ th{{background:#f5f5f5;text-align:left}}
 <div class="hint">{lb['hint']}</div>
 </body></html>"""
 
-    # Build a safe ASCII filename + RFC 6266 UTF-8 encoded filename
-    from urllib.parse import quote
-    safe_title = title.replace(" ", "_")
-    ascii_fallback = "report.html"
-    utf8_filename = quote(safe_title + ".html", safe="")
-    content_disp = (
-        f'attachment; filename="{ascii_fallback}"; '
-        f"filename*=UTF-8''{utf8_filename}"
-    )
-
+    import re
+    ascii_title = re.sub(r'[^a-zA-Z0-9_\- ]', '', title).strip().replace(" ", "_")
+    if not ascii_title:
+        ascii_title = "report"
+    
     return HTMLResponse(content=html, headers={
-        "Content-Disposition": content_disp
+        "Content-Disposition": f'attachment; filename="{ascii_title}.html"'
     })
 
 
@@ -192,6 +187,146 @@ def export_json(request: Request, response: Response, db: Session = Depends(get_
         .all()
     )
     return JSONResponse(content=[_ser(it) for it in items])
+
+
+@router.get("/export/xlsx")
+def export_xlsx(
+    request: Request,
+    response: Response,
+    title: str = "İnteraktif Fizik Lab Raporu",
+    lang: str = "tr",
+    db: Session = Depends(get_db),
+):
+    """Generate and return an Excel (.xlsx) report."""
+    import io
+    from urllib.parse import quote
+    from fastapi.responses import Response
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+
+    sid = ensure_session(request, response)
+    items = (
+        db.query(ReportItem)
+        .filter(ReportItem.session_id == sid)
+        .order_by(ReportItem.order_index)
+        .all()
+    )
+
+    # i18n headers
+    _hdr = {
+        "tr": {
+            "num": "#",
+            "expression": "İfade",
+            "q1": "q1 (µC)",
+            "q2": "q2 (µC)",
+            "r": "r (m)",
+            "force": "F (N)",
+            "timestamp": "Zaman Damgası",
+            "sheet": "Rapor",
+            "created": "Oluşturulma",
+        },
+        "en": {
+            "num": "#",
+            "expression": "Expression",
+            "q1": "q1 (µC)",
+            "q2": "q2 (µC)",
+            "r": "r (m)",
+            "force": "F (N)",
+            "timestamp": "Timestamp",
+            "sheet": "Report",
+            "created": "Created",
+        },
+    }
+    h = _hdr.get(lang, _hdr["tr"])
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = h["sheet"]
+
+    # ── Title row ──
+    ws.merge_cells("A1:G1")
+    title_cell = ws["A1"]
+    title_cell.value = title
+    title_cell.font = Font(bold=True, size=14, color="EC5B13")
+    title_cell.alignment = Alignment(horizontal="center", vertical="center")
+    ws.row_dimensions[1].height = 28
+
+    # ── Created-at row ──
+    ws.merge_cells("A2:G2")
+    meta_cell = ws["A2"]
+    meta_cell.value = f"{h['created']}: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    meta_cell.font = Font(size=10, italic=True, color="666666")
+    meta_cell.alignment = Alignment(horizontal="center")
+    ws.row_dimensions[2].height = 20
+
+    # ── Header row (row 4) ──
+    headers = [h["num"], h["expression"], h["q1"], h["q2"], h["r"], h["force"], h["timestamp"]]
+    header_font = Font(bold=True, size=11, color="FFFFFF")
+    header_fill = PatternFill(start_color="EC5B13", end_color="EC5B13", fill_type="solid")
+    header_align = Alignment(horizontal="center", vertical="center")
+    thin_border = Border(
+        left=Side(style="thin", color="DDDDDD"),
+        right=Side(style="thin", color="DDDDDD"),
+        top=Side(style="thin", color="DDDDDD"),
+        bottom=Side(style="thin", color="DDDDDD"),
+    )
+
+    for col_idx, hdr_text in enumerate(headers, start=1):
+        cell = ws.cell(row=4, column=col_idx, value=hdr_text)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = header_align
+        cell.border = thin_border
+    ws.row_dimensions[4].height = 22
+
+    # ── Data rows ──
+    data_font = Font(size=11)
+    data_align_center = Alignment(horizontal="center", vertical="center")
+    data_align_left = Alignment(horizontal="left", vertical="center")
+    alt_fill = PatternFill(start_color="FFF3ED", end_color="FFF3ED", fill_type="solid")
+
+    for idx, it in enumerate(items):
+        row_num = 5 + idx
+        row_data = [
+            idx + 1,
+            it.label,
+            round(it.q1, 2),
+            round(it.q2, 2),
+            round(it.r, 4),
+            round(it.force, 6),
+            str(it.created_at),
+        ]
+        for col_idx, val in enumerate(row_data, start=1):
+            cell = ws.cell(row=row_num, column=col_idx, value=val)
+            cell.font = data_font
+            cell.border = thin_border
+            cell.alignment = data_align_center if col_idx != 2 else data_align_left
+            if idx % 2 == 1:
+                cell.fill = alt_fill
+
+    # ── Column widths ──
+    col_widths = [5, 40, 12, 12, 12, 16, 22]
+    for i, w in enumerate(col_widths, start=1):
+        ws.column_dimensions[chr(64 + i)].width = w
+
+    # ── Freeze header ──
+    ws.freeze_panes = "A5"
+
+    # ── Write to buffer ──
+    buf = io.BytesIO()
+    wb.save(buf)
+
+    # Convert to pure ascii to prevent enterprise browser/proxy rejection
+    import re
+    ascii_title = re.sub(r'[^a-zA-Z0-9_\- ]', '', title).strip().replace(" ", "_")
+    if not ascii_title:
+        ascii_title = "report"
+
+    return Response(
+        content=buf.getvalue(),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{ascii_title}.xlsx"'},
+    )
 
 
 # ---- helpers ----------------------------------------------------------
