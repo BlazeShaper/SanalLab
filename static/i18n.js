@@ -84,6 +84,8 @@ const TRANSLATIONS = {
         "exp.electrostatics.name": "Elektrostatik: Cam vs Plastik (İpek & Yün)",
         "exp.electrostatics.rubGlass": "Cam Çubuğu İpek ile Ov",
         "exp.electrostatics.rubPlastic": "Plastik Çubuğu Yün ile Ov",
+        "exp.electrostatics.glassCharge": "Cam Yükü (Q1)",
+        "exp.electrostatics.plasticCharge": "Plastik Yükü (Q2)",
         "exp.electrostatics.distance": "Çubuk Mesafesi",
         "exp.electrostatics.showCharges": "Yükleri Göster",
         "exp.electrostatics.showForces": "Kuvvet Oklarını Göster",
@@ -92,8 +94,8 @@ const TRANSLATIONS = {
         "force.attractive": "Çekme Kuvveti",
         "force.repulsive": "İtme Kuvveti",
 
-        "exp.electrostatics.rubGlassLog": "Cam çubuk ipek ile ovuldu → pozitif yük uygulandı (+5.0 µC)",
-        "exp.electrostatics.rubPlasticLog": "Plastik çubuk yün ile ovuldu → negatif yük uygulandı (-5.0 µC)",
+        "exp.electrostatics.rubGlassLog": "Cam çubuk ipek ile ovuldu → +1.0 µC yük eklendi",
+        "exp.electrostatics.rubPlasticLog": "Plastik çubuk yün ile ovuldu → -1.0 µC yük eklendi",
 
         // Learning content
         "learning.summary": 'Malzemeleri birbirine ovduğunuzda elektronlar hareket eder. '
@@ -183,6 +185,8 @@ const TRANSLATIONS = {
         "exp.electrostatics.name": "Electrostatics: Glass vs Plastic (Silk & Wool)",
         "exp.electrostatics.rubGlass": "Rub Glass Rod with Silk",
         "exp.electrostatics.rubPlastic": "Rub Plastic Rod with Wool",
+        "exp.electrostatics.glassCharge": "Glass Charge (Q1)",
+        "exp.electrostatics.plasticCharge": "Plastic Charge (Q2)",
         "exp.electrostatics.distance": "Rod Distance",
         "exp.electrostatics.showCharges": "Show Charges",
         "exp.electrostatics.showForces": "Show Force Arrows",
@@ -191,8 +195,8 @@ const TRANSLATIONS = {
         "force.attractive": "Attractive Force",
         "force.repulsive": "Repulsive Force",
 
-        "exp.electrostatics.rubGlassLog": "Glass rod rubbed with silk -> positive charge applied (+5.0 µC)",
-        "exp.electrostatics.rubPlasticLog": "Plastic rod rubbed with wool -> negative charge applied (-5.0 µC)",
+        "exp.electrostatics.rubGlassLog": "Glass rod rubbed with silk → +1.0 µC charge added",
+        "exp.electrostatics.rubPlasticLog": "Plastic rod rubbed with wool → -1.0 µC charge added",
 
         "learning.summary": 'When you rub materials together, electrons move. '
             + 'Rubbing <span class="font-bold text-sky-600 dark:text-sky-400">glass with silk</span> '

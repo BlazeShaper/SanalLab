@@ -56,13 +56,33 @@ class ElectrostaticsExperiment(BaseExperiment):
             },
             {
                 "type": "slider",
+                "id": "glassCharge",
+                "label": "exp.electrostatics.glassCharge",
+                "field": "glassChargeMicroC",
+                "min": -100.0,
+                "max": 100.0,
+                "step": 0.5,
+                "unit": " µC",
+            },
+            {
+                "type": "slider",
+                "id": "plasticCharge",
+                "label": "exp.electrostatics.plasticCharge",
+                "field": "plasticChargeMicroC",
+                "min": -100.0,
+                "max": 100.0,
+                "step": 0.5,
+                "unit": " µC",
+            },
+            {
+                "type": "slider",
                 "id": "distance",
                 "label": "exp.electrostatics.distance",
                 "field": "distanceMeters",
-                "min": 0.5,
-                "max": 5.0,
-                "step": 0.1,
-                "unit": "m",
+                "min": 0.01,
+                "max": 10.0,
+                "step": 0.01,
+                "unit": " m",
             },
             {
                 "type": "toggle",
@@ -81,11 +101,12 @@ class ElectrostaticsExperiment(BaseExperiment):
     def compute(self, state: dict[str, Any]) -> dict[str, Any]:
         q1_micro = state.get("glassChargeMicroC", 0.0)
         q2_micro = state.get("plasticChargeMicroC", 0.0)
-        r = max(0.05, state.get("distanceMeters", 2.5))
+        r = max(1e-6, state.get("distanceMeters", 2.5))  # prevent division by zero
 
-        q1_c = q1_micro * 1e-6
+        q1_c = q1_micro * 1e-6  # convert µC to C
         q2_c = q2_micro * 1e-6
 
+        # Coulomb's Law: F = k · |q₁·q₂| / r²
         force = 0.0
         if q1_c != 0 and q2_c != 0:
             force = COULOMB_K * abs(q1_c * q2_c) / (r * r)
@@ -99,10 +120,11 @@ class ElectrostaticsExperiment(BaseExperiment):
             force_label = "force.repulsive"
 
         # Target angles for the pendulum-like animation
+        # Use logarithmic scaling so animation stays visible at any magnitude
         glass_target = 2.0
         plastic_target = -2.0
         if q1_c != 0 and q2_c != 0:
-            angle_mag = min(force * 120, 10)
+            angle_mag = min(2.0 + 3.0 * math.log10(1.0 + force), 25.0)
             if product < 0:
                 glass_target = angle_mag
                 plastic_target = -angle_mag
@@ -112,7 +134,7 @@ class ElectrostaticsExperiment(BaseExperiment):
 
         return {
             "force": force,
-            "forceFormatted": f"{force:.3f} N" if math.isfinite(force) else "0.000 N",
+            "forceFormatted": self._fmt_force(force),
             "forceLabel": force_label,
             "q1Formatted": self._fmt_micro(q1_micro),
             "q2Formatted": self._fmt_micro(q2_micro),
@@ -148,6 +170,16 @@ class ElectrostaticsExperiment(BaseExperiment):
     def _fmt_micro(val: float) -> str:
         sign = "+" if val > 0 else ("-" if val < 0 else "")
         return f"{sign}{abs(val):.1f} µC"
+
+    @staticmethod
+    def _fmt_force(force: float) -> str:
+        if not math.isfinite(force):
+            return "0.000 N"
+        if force >= 1e6:
+            return f"{force:.3e} N"
+        if force >= 1000:
+            return f"{force:,.1f} N"
+        return f"{force:.3f} N"
 
 
 # ---- auto-register ---------------------------------------------------

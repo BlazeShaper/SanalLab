@@ -167,8 +167,18 @@ th{{background:#f5f5f5;text-align:left}}
 <div class="hint">{lb['hint']}</div>
 </body></html>"""
 
+    # Build a safe ASCII filename + RFC 6266 UTF-8 encoded filename
+    from urllib.parse import quote
+    safe_title = title.replace(" ", "_")
+    ascii_fallback = "report.html"
+    utf8_filename = quote(safe_title + ".html", safe="")
+    content_disp = (
+        f'attachment; filename="{ascii_fallback}"; '
+        f"filename*=UTF-8''{utf8_filename}"
+    )
+
     return HTMLResponse(content=html, headers={
-        "Content-Disposition": f'attachment; filename="{title.replace(" ", "_")}.html"'
+        "Content-Disposition": content_disp
     })
 
 

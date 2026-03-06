@@ -87,10 +87,10 @@ def experiment_action(exp_id: str, payload: ActionPayload, request: Request, res
 
     if exp_id == "electrostatics":
         if action == "rubGlass":
-            st["glassChargeMicroC"] = 5.0
+            st["glassChargeMicroC"] = st.get("glassChargeMicroC", 0.0) + 1.0
             log_msg = "exp.electrostatics.rubGlassLog"
         elif action == "rubPlastic":
-            st["plasticChargeMicroC"] = -5.0
+            st["plasticChargeMicroC"] = st.get("plasticChargeMicroC", 0.0) - 1.0
             log_msg = "exp.electrostatics.rubPlasticLog"
         elif action == "pause":
             st["running"] = False
