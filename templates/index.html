@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html class="light" lang="tr">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Interactive Physics Lab</title>
+  <title>İnteraktif Fizik Laboratuvarı</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
     rel="stylesheet" />
-  <link href="/static/styles.css?v=2" rel="stylesheet" />
+  <link href="/static/styles.css?v=3" rel="stylesheet" />
 
   <script>
     tailwind.config = {
@@ -51,7 +51,7 @@
           <span class="material-symbols-outlined block">science</span>
         </div>
         <div class="flex flex-col leading-tight">
-          <h1 class="text-xl font-bold tracking-tight">Interactive Physics Lab</h1>
+          <h1 class="text-xl font-bold tracking-tight" data-i18n="header.title">İnteraktif Fizik Laboratuvarı</h1>
           <span id="activeExperimentName"
             class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tracking-wide"></span>
         </div>
@@ -61,7 +61,8 @@
         <div class="relative">
           <button id="expMenuBtn"
             class="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors">
-            Experiments <span class="material-symbols-outlined text-sm">expand_more</span>
+            <span data-i18n="header.experiments">Deneyler</span> <span
+              class="material-symbols-outlined text-sm">expand_more</span>
           </button>
           <div id="expMenuList"
             class="hidden absolute top-full mt-2 right-0 w-72 bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
@@ -76,11 +77,17 @@
               class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
           </span>
-          <span id="statusText">Simulation: Running</span>
+          <span id="statusText" data-i18n="status.running">Simülasyon: Çalışıyor</span>
         </div>
       </nav>
 
       <div class="flex items-center gap-4">
+        <button id="langToggleBtn" onclick="toggleLang(); if(typeof onLangChanged==='function') onLangChanged();"
+          class="px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-colors flex items-center gap-1.5"
+          title="Dili Değiştir">
+          <span class="material-symbols-outlined text-sm">translate</span>
+          <span data-i18n="lang.toggle">EN</span>
+        </button>
         <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors" title="Settings">
           <span class="material-symbols-outlined">settings</span>
         </button>
@@ -96,46 +103,49 @@
         class="w-72 bg-white dark:bg-background-dark border-r border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
         <div class="p-4 space-y-6">
           <div>
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Experiment Controls</h3>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4"
+              data-i18n="sidebar.experimentControls">Deney Kontrolleri</h3>
             <div id="controlsMount" class="space-y-3"></div>
           </div>
 
           <div>
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Global</h3>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" data-i18n="sidebar.global">Genel
+            </h3>
             <div class="grid grid-cols-2 gap-3">
               <button id="pauseBtn"
                 class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 transition-colors">
                 <span id="pauseIcon" class="material-symbols-outlined text-primary mb-1">pause_circle</span>
-                <span id="pauseText" class="text-xs font-bold">Pause</span>
+                <span id="pauseText" class="text-xs font-bold" data-i18n="btn.pause">Duraklat</span>
               </button>
               <button id="resetBtn"
                 class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 transition-colors">
                 <span class="material-symbols-outlined text-slate-400 mb-1">replay</span>
-                <span class="text-xs font-bold">Reset</span>
+                <span class="text-xs font-bold" data-i18n="btn.reset">Sıfırla</span>
               </button>
             </div>
           </div>
 
           <!-- File Manager -->
           <div>
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">File Manager</h3>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" data-i18n="sidebar.fileManager">
+              Dosya Yöneticisi</h3>
             <div id="fileDropZone" class="file-drop-zone mb-3">
               <span class="material-symbols-outlined text-slate-400 text-2xl mb-1 block">upload_file</span>
-              <span class="text-xs text-slate-500">Click or drag a file here</span>
+              <span class="text-xs text-slate-500" data-i18n="file.dropHint">Dosya sürükle veya tıkla</span>
               <input id="fileInput" type="file" class="hidden" />
             </div>
             <button id="uploadBtn"
               class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all text-xs font-bold mb-3 disabled:opacity-40 disabled:cursor-not-allowed"
               disabled>
               <span class="material-symbols-outlined text-sm">cloud_upload</span>
-              Upload Selected File
+              <span data-i18n="file.upload">Seçili Dosyayı Yükle</span>
             </button>
             <div id="fileList" class="space-y-2 max-h-48 overflow-y-auto"></div>
           </div>
 
           <div class="pt-2">
-            <div class="text-[10px] text-slate-400 leading-relaxed">
-              All operations powered by FastAPI backend.
+            <div class="text-[10px] text-slate-400 leading-relaxed" data-i18n="sidebar.footer">
+              Tüm işlemler FastAPI backend ile gerçekleştirilir.
             </div>
           </div>
         </div>
@@ -155,9 +165,9 @@
                 <div class="flex items-center justify-center mb-3">
                   <span class="material-symbols-outlined text-primary text-3xl">construction</span>
                 </div>
-                <h3 class="text-lg font-extrabold">Experiment module not implemented yet</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
-                  This is a placeholder. Select Electrostatics to see a working simulation.
+                <h3 class="text-lg font-extrabold" data-i18n="placeholder.title">Deney modülü henüz uygulanmadı</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-2" data-i18n="placeholder.desc">
+                  Bu bir yer tutucudur. Çalışan bir simülasyon görmek için Elektrostatik'i seçin.
                 </p>
               </div>
             </div>
@@ -172,7 +182,8 @@
                 <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
                 <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
               </div>
-              <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500">Glass Rod</span>
+              <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500"
+                data-i18n="label.glassRod">Cam Çubuk</span>
             </div>
 
             <!-- Right Rod (Plastic) -->
@@ -185,7 +196,8 @@
                 <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
                 <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
               </div>
-              <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500">Plastic Rod</span>
+              <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500"
+                data-i18n="label.plasticRod">Plastik Çubuk</span>
             </div>
 
             <!-- Prop Cloths -->
@@ -194,14 +206,14 @@
                 class="w-12 h-12 bg-white dark:bg-white/10 rounded-lg shadow-sm flex items-center justify-center border border-slate-200 dark:border-white/10 mb-2">
                 <span class="material-symbols-outlined text-sky-400">grid_guides</span>
               </div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase">Silk</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase" data-i18n="label.silk">İpek</span>
             </div>
             <div class="absolute bottom-10 right-10 text-center">
               <div
                 class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg shadow-sm flex items-center justify-center border border-amber-200 dark:border-amber-900/50 mb-2">
                 <span class="material-symbols-outlined text-amber-700">texture</span>
               </div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase">Wool</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase" data-i18n="label.wool">Yün</span>
             </div>
 
             <!-- Force Arrow -->
@@ -210,7 +222,7 @@
               <div class="w-16 h-0.5 bg-primary relative flex items-center">
                 <div class="absolute -left-1 w-2 h-2 rotate-45 border-l-2 border-b-2 border-primary"></div>
               </div>
-              <span id="forceLabel" class="text-[10px] font-mono text-primary font-bold">Attractive Force</span>
+              <span id="forceLabel" class="text-[10px] font-mono text-primary font-bold">Çekme Kuvveti</span>
               <div class="w-16 h-0.5 bg-primary relative flex items-center">
                 <div class="absolute -right-1 w-2 h-2 rotate-45 border-r-2 border-t-2 border-primary"></div>
               </div>
@@ -223,7 +235,8 @@
           class="h-32 bg-white dark:bg-background-dark border-t border-slate-200 dark:border-primary/20 p-3 overflow-hidden flex flex-col">
           <div class="flex items-center gap-2 mb-2">
             <span class="material-symbols-outlined text-xs text-slate-400">terminal</span>
-            <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Log</h4>
+            <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" data-i18n="log.title">Sistem
+              Günlüğü</h4>
           </div>
           <div id="logList" class="flex-1 overflow-y-auto font-mono text-xs space-y-1"></div>
         </div>
@@ -236,34 +249,38 @@
           <div>
             <h2 class="text-lg font-bold mb-3 flex items-center gap-2">
               <span class="material-symbols-outlined text-primary">school</span>
-              Learning Panel
+              <span data-i18n="panel.learning">Öğrenme Paneli</span>
             </h2>
             <div id="learningSummary" class="p-4 bg-primary/5 rounded-xl border border-primary/10">
-              <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">Loading…</p>
+              <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="learning.loading">
+                Yükleniyor…</p>
             </div>
           </div>
 
           <div class="space-y-4">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Core Concepts</h3>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="panel.coreConcepts">Temel
+              Kavramlar</h3>
             <div id="coreConcepts" class="space-y-3"></div>
           </div>
 
           <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Readouts</h3>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="panel.liveReadouts">Canlı
+              Okumalar</h3>
             <div class="space-y-2">
               <div
                 class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
-                <span class="text-xs font-medium text-slate-500">Total Force (F)</span>
+                <span class="text-xs font-medium text-slate-500" data-i18n="readout.totalForce">Toplam Kuvvet (F)</span>
                 <span id="forceReadout" class="text-sm font-mono font-bold text-primary">0.000 N</span>
               </div>
               <div
                 class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
-                <span class="text-xs font-medium text-slate-500">Glass Charge (Q1)</span>
+                <span class="text-xs font-medium text-slate-500" data-i18n="readout.glassCharge">Cam Yükü (Q1)</span>
                 <span id="q1Readout" class="text-sm font-mono font-bold text-sky-600 dark:text-sky-400">+0.0 µC</span>
               </div>
               <div
                 class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
-                <span class="text-xs font-medium text-slate-500">Plastic Charge (Q2)</span>
+                <span class="text-xs font-medium text-slate-500" data-i18n="readout.plasticCharge">Plastik Yükü
+                  (Q2)</span>
                 <span id="q2Readout" class="text-sm font-mono font-bold text-amber-700 dark:text-amber-500">0.0
                   µC</span>
               </div>
@@ -272,7 +289,8 @@
 
           <div class="pt-4">
             <div class="p-4 rounded-xl bg-slate-900 text-white flex flex-col items-center text-center">
-              <p class="text-[11px] font-bold opacity-60 uppercase mb-2">Math Expression</p>
+              <p class="text-[11px] font-bold opacity-60 uppercase mb-2" data-i18n="panel.mathExpression">Matematik
+                İfadesi</p>
               <div class="font-serif italic text-lg tracking-widest">F = k · (|q₁|·|q₂|) / r²</div>
             </div>
           </div>
@@ -280,36 +298,39 @@
           <!-- Report Builder -->
           <div class="pt-4 border-t border-slate-100 dark:border-white/5 space-y-3">
             <div class="flex items-center justify-between">
-              <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Report Builder</h3>
+              <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="report.title">Rapor
+                Oluşturucu</h3>
               <button id="exportReportBtn"
-                class="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
-                Export Report
+                class="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                data-i18n="report.export">
+                Raporu Dışa Aktar
               </button>
             </div>
 
             <div class="space-y-2">
-              <label class="text-xs font-semibold text-slate-500">Report Title</label>
+              <label class="text-xs font-semibold text-slate-500" data-i18n="report.titleLabel">Rapor Başlığı</label>
               <input id="reportTitleInput"
                 class="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm"
-                value="Interactive Physics Lab Report" />
+                data-i18n-value="report.defaultTitle" value="İnteraktif Fizik Lab Raporu" />
             </div>
 
             <div class="space-y-2">
-              <label class="text-xs font-semibold text-slate-500">Choose Expression</label>
+              <label class="text-xs font-semibold text-slate-500" data-i18n="report.chooseExpression">İfade
+                Seçin</label>
               <select id="expressionSelect"
                 class="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm">
-                <option value="coulomb">Coulomb's Law: F = k · (|q₁|·|q₂|) / r²</option>
+                <option value="coulomb">Coulomb Yasası: F = k · (|q₁|·|q₂|) / r²</option>
               </select>
             </div>
 
             <button id="addToReportBtn"
               class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-primary text-white rounded-lg hover:brightness-95 transition-all text-sm font-bold">
               <span class="material-symbols-outlined text-base">note_add</span>
-              Add current values to report
+              <span data-i18n="report.addCurrent">Mevcut değerleri rapora ekle</span>
             </button>
 
-            <div id="reportHint" class="text-[11px] text-slate-500 dark:text-slate-400">
-              Tip: Export sonrası dosyayı açıp tarayıcıdan <b>Print → Save as PDF</b> ile PDF alabilirsin.
+            <div id="reportHint" class="text-[11px] text-slate-500 dark:text-slate-400" data-i18n-html="report.hint">
+              İpucu: Export sonrası dosyayı açıp tarayıcıdan <b>Print → Save as PDF</b> ile PDF alabilirsin.
             </div>
 
             <div id="reportItemsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
@@ -319,7 +340,8 @@
     </div>
   </div>
 
-  <script src="/static/app.js?v=2"></script>
+  <script src="/static/i18n.js?v=1"></script>
+  <script src="/static/app.js?v=3"></script>
 </body>
 
 </html>

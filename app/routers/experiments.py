@@ -88,22 +88,22 @@ def experiment_action(exp_id: str, payload: ActionPayload, request: Request, res
     if exp_id == "electrostatics":
         if action == "rubGlass":
             st["glassChargeMicroC"] = 5.0
-            log_msg = "Glass rod rubbed with silk -> positive charge applied (+5.0 µC)"
+            log_msg = "exp.electrostatics.rubGlassLog"
         elif action == "rubPlastic":
             st["plasticChargeMicroC"] = -5.0
-            log_msg = "Plastic rod rubbed with wool -> negative charge applied (-5.0 µC)"
+            log_msg = "exp.electrostatics.rubPlasticLog"
         elif action == "pause":
             st["running"] = False
-            log_msg = "Simulation paused."
+            log_msg = "log.simPaused"
         elif action == "resume":
             st["running"] = True
-            log_msg = "Simulation resumed."
+            log_msg = "log.simResumed"
         elif action == "togglePause":
             st["running"] = not st.get("running", True)
-            log_msg = "Simulation resumed." if st["running"] else "Simulation paused."
+            log_msg = "log.simResumed" if st["running"] else "log.simPaused"
         elif action == "reset":
             st = exp.default_state()
-            log_msg = "Simulation environment reset."
+            log_msg = "log.simReset"
 
     set_experiment_state(sid, exp_id, st)
     computed = exp.compute(st)

@@ -99,7 +99,13 @@ def delete_item(item_id: str, request: Request, response: Response, db: Session 
 
 
 @router.get("/export/html", response_class=HTMLResponse)
-def export_html(request: Request, response: Response, title: str = "Interactive Physics Lab Report", db: Session = Depends(get_db)):
+def export_html(
+    request: Request,
+    response: Response,
+    title: str = "İnteraktif Fizik Lab Raporu",
+    lang: str = "tr",
+    db: Session = Depends(get_db),
+):
     sid = ensure_session(request, response)
     items = (
         db.query(ReportItem)
@@ -117,12 +123,33 @@ def export_html(request: Request, response: Response, title: str = "Interactive 
             f"<td>{it.created_at}</td></tr>\n"
         )
 
+    # i18n labels for export
+    _labels = {
+        "tr": {
+            "created_at": "Oluşturulma tarihi: ",
+            "saved_expressions": "Kaydedilmiş İfadeler",
+            "expression": "İfade",
+            "timestamp": "Zaman Damgası",
+            "no_items": "Kaydedilmiş öğe yok.",
+            "hint": 'PDF olarak dışa aktar: Tarayıcı Yazdır → "PDF olarak Kaydet".',
+        },
+        "en": {
+            "created_at": "Created at: ",
+            "saved_expressions": "Saved Expressions",
+            "expression": "Expression",
+            "timestamp": "Timestamp",
+            "no_items": "No items saved.",
+            "hint": 'Export as PDF: Browser Print → "Save as PDF".',
+        },
+    }
+    lb = _labels.get(lang, _labels["tr"])
+
     if not rows:
-        rows = '<tr><td colspan="7">No items saved.</td></tr>'
+        rows = f'<tr><td colspan="7">{lb["no_items"]}</td></tr>'
 
     created = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     html = f"""<!doctype html>
-<html><head><meta charset="utf-8"/><title>{_esc(title)}</title>
+<html lang="{lang}"><head><meta charset="utf-8"/><title>{_esc(title)}</title>
 <style>
 body{{font-family:Arial,sans-serif;margin:24px;color:#111}}
 h1{{margin:0 0 8px}}
@@ -133,11 +160,11 @@ th{{background:#f5f5f5;text-align:left}}
 .hint{{margin-top:16px;color:#666;font-size:12px}}
 </style></head><body>
 <h1>{_esc(title)}</h1>
-<div class="meta">Created at: {created}</div>
-<h2>Saved Expressions</h2>
-<table><thead><tr><th>#</th><th>Expression</th><th>q1</th><th>q2</th><th>r</th><th>F</th><th>Timestamp</th></tr></thead>
+<div class="meta">{lb['created_at']}{created}</div>
+<h2>{lb['saved_expressions']}</h2>
+<table><thead><tr><th>#</th><th>{lb['expression']}</th><th>q1</th><th>q2</th><th>r</th><th>F</th><th>{lb['timestamp']}</th></tr></thead>
 <tbody>{rows}</tbody></table>
-<div class="hint">Export as PDF: Browser Print → "Save as PDF".</div>
+<div class="hint">{lb['hint']}</div>
 </body></html>"""
 
     return HTMLResponse(content=html, headers={

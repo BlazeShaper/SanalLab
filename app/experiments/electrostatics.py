@@ -18,7 +18,8 @@ class ElectrostaticsExperiment(BaseExperiment):
 
     @property
     def name(self) -> str:
-        return "Electrostatics: Glass vs Plastic (Silk & Wool)"
+        # Returns an i18n key — frontend translates via t()
+        return "exp.electrostatics.name"
 
     # ------------------------------------------------------------------
 
@@ -42,21 +43,21 @@ class ElectrostaticsExperiment(BaseExperiment):
             {
                 "type": "button",
                 "id": "rubGlass",
-                "label": "Rub Glass Rod with Silk",
+                "label": "exp.electrostatics.rubGlass",
                 "icon": "auto_awesome",
                 "action": "rubGlass",
             },
             {
                 "type": "button",
                 "id": "rubPlastic",
-                "label": "Rub Plastic Rod with Wool",
+                "label": "exp.electrostatics.rubPlastic",
                 "icon": "texture",
                 "action": "rubPlastic",
             },
             {
                 "type": "slider",
                 "id": "distance",
-                "label": "Rod Distance",
+                "label": "exp.electrostatics.distance",
                 "field": "distanceMeters",
                 "min": 0.5,
                 "max": 5.0,
@@ -66,13 +67,13 @@ class ElectrostaticsExperiment(BaseExperiment):
             {
                 "type": "toggle",
                 "id": "showCharges",
-                "label": "Show Charges",
+                "label": "exp.electrostatics.showCharges",
                 "field": "showCharges",
             },
             {
                 "type": "toggle",
                 "id": "showForces",
-                "label": "Show Force Arrows",
+                "label": "exp.electrostatics.showForces",
                 "field": "showForces",
             },
         ]
@@ -91,11 +92,11 @@ class ElectrostaticsExperiment(BaseExperiment):
 
         product = q1_c * q2_c
         if q1_c == 0 or q2_c == 0:
-            force_label = "No Force (Neutral)"
+            force_label = "force.none"
         elif product < 0:
-            force_label = "Attractive Force"
+            force_label = "force.attractive"
         else:
-            force_label = "Repulsive Force"
+            force_label = "force.repulsive"
 
         # Target angles for the pendulum-like animation
         glass_target = 2.0
@@ -122,24 +123,19 @@ class ElectrostaticsExperiment(BaseExperiment):
         }
 
     def learning_content(self) -> dict[str, Any]:
+        # Return i18n keys — frontend translates
         return {
-            "summary": (
-                'When you rub materials together, electrons move. '
-                'Rubbing <span class="font-bold text-sky-600 dark:text-sky-400">glass with silk</span> '
-                'leaves the glass positively charged (+). Rubbing '
-                '<span class="font-bold text-amber-700 dark:text-amber-500">plastic with wool</span> '
-                'leaves the plastic negatively charged (-).'
-            ),
+            "summary": "learning.summary",
             "concepts": [
                 {
                     "num": "01",
-                    "title": "Charging by Friction",
-                    "desc": "The transfer of electrons from one uncharged object to another.",
+                    "title": "learning.concept1.title",
+                    "desc": "learning.concept1.desc",
                 },
                 {
                     "num": "02",
-                    "title": "Coulomb's Law",
-                    "desc": "Force between two charges is proportional to their product and inverse to distance².",
+                    "title": "learning.concept2.title",
+                    "desc": "learning.concept2.desc",
                 },
             ],
         }

@@ -120,14 +120,16 @@ function applyComputed(computed) {
   forceReadout.textContent = computed.forceFormatted || "0.000 N";
   q1Readout.textContent = computed.q1Formatted || "+0.0 µC";
   q2Readout.textContent = computed.q2Formatted || "0.0 µC";
-  forceLabel.textContent = computed.forceLabel || "";
+
+  // Translate force label key
+  const flKey = computed.forceLabel || "";
+  forceLabel.textContent = t(flKey) !== flKey ? t(flKey) : flKey;
 
   local.glassTarget = computed.glassTarget ?? 2;
   local.plasticTarget = computed.plasticTarget ?? -2;
   local.showCharges = computed.showCharges ?? true;
   local.showForces = computed.showForces ?? false;
 
-  $(".charge-symbol", undefined)  // handled below
   $$(".charge-symbol").forEach(el => { el.style.display = local.showCharges ? "" : "none"; });
   forceGroup.style.display = local.showForces ? "flex" : "none";
 }
@@ -135,15 +137,15 @@ function applyComputed(computed) {
 // ─── Status ─────────────────────────────────────────────────────────
 function setStatusUI() {
   if (local.running) {
-    statusText.textContent = "Simulation: Running";
+    statusText.textContent = t("status.running");
     statusPing.classList.remove("hidden");
     pauseIcon.textContent = "pause_circle";
-    pauseText.textContent = "Pause";
+    pauseText.textContent = t("btn.pause");
   } else {
-    statusText.textContent = "Simulation: Paused";
+    statusText.textContent = t("status.paused");
     statusPing.classList.add("hidden");
     pauseIcon.textContent = "play_circle";
-    pauseText.textContent = "Run";
+    pauseText.textContent = t("btn.run");
   }
 }
 
@@ -153,26 +155,29 @@ function renderControls(schema) {
   if (!schema || !schema.length) {
     controlsMount.innerHTML = `
       <div class="p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5">
-        <div class="text-sm font-bold">No controls available</div>
-        <div class="text-xs text-slate-500 mt-1">This experiment is a placeholder module.</div>
+        <div class="text-sm font-bold">${escapeHtml(t("controls.noControls"))}</div>
+        <div class="text-xs text-slate-500 mt-1">${escapeHtml(t("controls.noControlsDesc"))}</div>
       </div>`;
     return;
   }
 
   let html = "";
   for (const c of schema) {
+    // Translate label via i18n key if it exists
+    const label = t(c.label) !== c.label ? t(c.label) : c.label;
+
     if (c.type === "button") {
       html += `
         <button data-action="${c.action}"
           class="exp-action-btn w-full flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-white/5 hover:bg-primary/10 border border-slate-200 dark:border-white/10 rounded-lg transition-all text-left group">
           <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">${c.icon || "play_arrow"}</span>
-          <span class="text-sm font-medium">${escapeHtml(c.label)}</span>
+          <span class="text-sm font-medium">${escapeHtml(label)}</span>
         </button>`;
     } else if (c.type === "slider") {
       html += `
         <div class="pt-4 px-1">
           <div class="flex justify-between items-center mb-2">
-            <label class="text-sm font-semibold">${escapeHtml(c.label)}</label>
+            <label class="text-sm font-semibold">${escapeHtml(label)}</label>
             <span id="badge_${c.id}" class="text-xs font-mono text-primary bg-primary/10 px-1.5 rounded">${c.min}${c.unit || ""}</span>
           </div>
           <input data-field="${c.field}" data-unit="${c.unit || ""}" id="slider_${c.id}"
@@ -186,7 +191,7 @@ function renderControls(schema) {
       html += `
         <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
           <label class="flex items-center justify-between cursor-pointer">
-            <span class="text-sm font-medium">${escapeHtml(c.label)}</span>
+            <span class="text-sm font-medium">${escapeHtml(label)}</span>
             <div class="relative inline-flex items-center cursor-pointer">
               <input data-field="${c.field}" id="toggle_${c.id}" class="ctrl-toggle sr-only peer" type="checkbox"/>
               <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-white/10 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
@@ -220,7 +225,7 @@ function wireControls(currentState) {
         method: "POST",
         body: JSON.stringify({ action }),
       });
-      if (data.log) addLog(data.log, "primary");
+      if (data.log) addLog(t(data.log) !== data.log ? t(data.log) : data.log, "primary");
       applyComputed(data.computed);
     });
   });
@@ -258,23 +263,34 @@ function wireControls(currentState) {
 // ─── Learning panel ─────────────────────────────────────────────────
 function renderLearning(learning) {
   if (!learning || !learning.summary) {
-    learningSummary.innerHTML = `<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">Placeholder module. Switch to Electrostatics for content.</p>`;
+    learningSummary.innerHTML = `<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">${escapeHtml(t("learning.placeholder"))}</p>`;
     coreConcepts.innerHTML = "";
     return;
   }
-  learningSummary.innerHTML = `<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">${learning.summary}</p>`;
 
-  coreConcepts.innerHTML = (learning.concepts || []).map(c => `
+  // Translate summary key if it is a key, otherwise use raw HTML
+  const summaryKey = learning.summary;
+  const translated = t(summaryKey);
+  if (translated !== summaryKey) {
+    learningSummary.innerHTML = `<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">${translated}</p>`;
+  } else {
+    learningSummary.innerHTML = `<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">${learning.summary}</p>`;
+  }
+
+  coreConcepts.innerHTML = (learning.concepts || []).map(c => {
+    const cTitle = t(c.title) !== c.title ? t(c.title) : c.title;
+    const cDesc = t(c.desc) !== c.desc ? t(c.desc) : c.desc;
+    return `
     <div class="flex gap-3">
       <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center shrink-0">
         <span class="text-[10px] font-bold">${c.num}</span>
       </div>
       <div>
-        <h4 class="text-sm font-bold">${escapeHtml(c.title)}</h4>
-        <p class="text-xs text-slate-500">${escapeHtml(c.desc)}</p>
+        <h4 class="text-sm font-bold">${escapeHtml(cTitle)}</h4>
+        <p class="text-xs text-slate-500">${escapeHtml(cDesc)}</p>
       </div>
-    </div>
-  `).join("");
+    </div>`;
+  }).join("");
 }
 
 // ─── Experiment switching ───────────────────────────────────────────
@@ -282,7 +298,9 @@ async function mountExperiment(expId) {
   local.activeExpId = expId;
   const data = await api(`/api/experiments/${expId}`);
 
-  activeExperimentName.textContent = data.name || expId;
+  // Translate experiment name via key
+  const nameKey = data.name || expId;
+  activeExperimentName.textContent = t(nameKey) !== nameKey ? t(nameKey) : nameKey;
   placeholderOverlay.classList.toggle("hidden", !!data.implemented);
 
   renderControls(data.controls || []);
@@ -301,7 +319,7 @@ async function mountExperiment(expId) {
   setReportUIEnabled(expId === "electrostatics");
 
   local.logs = [];
-  addLog("Experiment loaded: " + (data.name || expId), "info");
+  addLog(t("log.expLoaded") + (t(nameKey) !== nameKey ? t(nameKey) : nameKey), "info");
 
   expMenuList.classList.add("hidden");
 }
@@ -309,11 +327,15 @@ async function mountExperiment(expId) {
 // ─── Experiments dropdown ───────────────────────────────────────────
 async function loadExperimentsList() {
   local.experiments = await api("/api/experiments");
-  expMenuItems.innerHTML = local.experiments.map(e => `
+  expMenuItems.innerHTML = local.experiments.map(e => {
+    const nameKey = e.name;
+    const displayName = t(nameKey) !== nameKey ? t(nameKey) : nameKey;
+    return `
     <button data-exp="${e.id}"
       class="w-full text-left px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors text-sm font-semibold">
-      ${escapeHtml(e.name)}
-    </button>`).join("");
+      ${escapeHtml(displayName)}
+    </button>`;
+  }).join("");
 }
 
 expMenuBtn.addEventListener("click", e => { e.stopPropagation(); expMenuList.classList.toggle("hidden"); });
@@ -330,7 +352,10 @@ pauseBtn.addEventListener("click", async () => {
     body: JSON.stringify({ action: "togglePause" }),
   });
   if (data.state) local.running = data.state.running !== false;
-  if (data.log) addLog(data.log, "info");
+  if (data.log) {
+    const logKey = data.log;
+    addLog(t(logKey) !== logKey ? t(logKey) : logKey, "info");
+  }
   setStatusUI();
 });
 
@@ -339,7 +364,10 @@ resetBtn.addEventListener("click", async () => {
     method: "POST",
     body: JSON.stringify({ action: "reset" }),
   });
-  if (data.log) addLog(data.log, "info");
+  if (data.log) {
+    const logKey = data.log;
+    addLog(t(logKey) !== logKey ? t(logKey) : logKey, "info");
+  }
   applyComputed(data.computed);
 
   local.glassAngleDeg = 2; local.plasticAngleDeg = -2;
@@ -352,9 +380,9 @@ resetBtn.addEventListener("click", async () => {
 
 // ─── Animation loop (client-side spring physics for smooth visuals) ─
 let lastT = performance.now();
-function tick(t) {
-  const dt = Math.min(0.05, (t - lastT) / 1000);
-  lastT = t;
+function tick(frameT) {
+  const dt = Math.min(0.05, (frameT - lastT) / 1000);
+  lastT = frameT;
 
   if (local.running && local.activeExpId === "electrostatics") {
     const stiffness = 18, damping = 10;
@@ -386,7 +414,7 @@ function renderReportItems(items) {
   if (!items || items.length === 0) {
     reportItemsList.innerHTML = `
       <div class="text-xs text-slate-400 italic p-3 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5">
-        No saved expressions yet. Add one using the button above.
+        ${escapeHtml(t("report.noItems"))}
       </div>`;
     return;
   }
@@ -418,7 +446,7 @@ function renderReportItems(items) {
 
 addToReportBtn.addEventListener("click", async () => {
   if (local.activeExpId !== "electrostatics") {
-    addLog("Report capture available in Electrostatics only.", "info");
+    addLog(t("log.reportOnly"), "info");
     return;
   }
 
@@ -437,13 +465,14 @@ addToReportBtn.addEventListener("click", async () => {
   };
 
   await api("/api/reports/items/add", { method: "POST", body: JSON.stringify(payload) });
-  addLog(`Saved to report: ${payload.label}`, "info");
+  addLog(t("log.savedToReport") + payload.label, "info");
   loadReportItems();
 });
 
 exportReportBtn.addEventListener("click", () => {
-  const title = encodeURIComponent(reportTitleInput.value || "Interactive Physics Lab Report");
-  window.location.href = `/api/reports/export/html?title=${title}`;
+  const title = encodeURIComponent(reportTitleInput.value || t("report.defaultTitle"));
+  const lang = getLang();
+  window.location.href = `/api/reports/export/html?title=${title}&lang=${lang}`;
 });
 
 reportItemsList.addEventListener("click", async (e) => {
@@ -471,8 +500,8 @@ function setReportUIEnabled(isEnabled) {
   expressionSelect.disabled = !isEnabled;
   expressionSelect.classList.toggle("opacity-50", !isEnabled);
   reportHint.innerHTML = isEnabled
-    ? `Tip: Export sonrası dosyayı açıp tarayıcıdan <b>Print → Save as PDF</b> ile PDF alabilirsin.`
-    : `Report capture is disabled in placeholder modules. Switch to <b>Electrostatics</b>.`;
+    ? t("report.hint")
+    : t("report.hintDisabled");
 }
 
 // ─── File Manager ───────────────────────────────────────────────────
@@ -505,13 +534,13 @@ uploadBtn.addEventListener("click", async () => {
   fd.append("file", selectedFile);
   const result = await apiUpload("/api/files/upload", fd);
   if (result.error) {
-    addLog("Upload failed: " + result.error, "info");
+    addLog(t("file.uploadFailed") + result.error, "info");
   } else {
-    addLog("File uploaded: " + (result.original_name || selectedFile.name), "primary");
+    addLog(t("file.uploaded") + (result.original_name || selectedFile.name), "primary");
   }
   selectedFile = null;
   fileInput.value = "";
-  fileDropZone.querySelector("span:last-child").textContent = "Click or drag a file here";
+  fileDropZone.querySelector("span:last-child").textContent = t("file.dropHint");
   loadFiles();
 });
 
@@ -525,7 +554,7 @@ async function loadFiles() {
 function renderFiles(files) {
   fileList.innerHTML = "";
   if (!files || files.length === 0) {
-    fileList.innerHTML = `<div class="text-xs text-slate-400 italic">No uploaded files.</div>`;
+    fileList.innerHTML = `<div class="text-xs text-slate-400 italic">${escapeHtml(t("file.noFiles"))}</div>`;
     return;
   }
   files.forEach(f => {
@@ -545,13 +574,25 @@ fileList.addEventListener("click", async (e) => {
   if (!btn) return;
   const fileId = btn.dataset.id;
   await api(`/api/files/${fileId}`, { method: "DELETE" });
-  addLog("File deleted.", "info");
+  addLog(t("file.deleted"), "info");
   loadFiles();
 });
+
+// ─── Language change callback ───────────────────────────────────────
+/** Called after toggleLang() to refresh dynamic UI parts. */
+function onLangChanged() {
+  setStatusUI();
+  setReportUIEnabled(local.activeExpId === "electrostatics");
+  // Re-mount current experiment to refresh labels
+  mountExperiment(local.activeExpId);
+}
 
 // ─── Boot ───────────────────────────────────────────────────────────
 async function boot() {
   try {
+    // Apply stored language to DOM
+    applyI18nDOM();
+
     await loadExperimentsList();
     await mountExperiment("electrostatics");
     loadReportItems();
@@ -559,7 +600,7 @@ async function boot() {
     requestAnimationFrame(tick);
   } catch (err) {
     console.error("Boot error:", err);
-    addLog("Failed to initialize — check backend connection.", "info");
+    addLog(t("log.bootFailed"), "info");
   }
 }
 
