@@ -233,21 +233,11 @@
 
         <!-- ========== Coulomb's Law Stage ========== -->
         <div id="coulombLawStage" class="hidden flex-1 flex flex-col relative overflow-hidden">
-          <!-- Progress Indicator -->
-          <div id="clProgressDots" class="flex w-full flex-row items-center justify-center gap-3 py-4 bg-background-light dark:bg-background-dark shrink-0">
-            <div class="cl-dot h-2.5 w-2.5 rounded-full bg-primary cursor-pointer transition-colors" data-step="1"></div>
-            <div class="cl-dot h-2.5 w-2.5 rounded-full bg-primary/30 cursor-pointer transition-colors" data-step="2"></div>
-            <div class="cl-dot h-2.5 w-2.5 rounded-full bg-primary/30 cursor-pointer transition-colors" data-step="3"></div>
-            <div class="cl-dot h-2.5 w-2.5 rounded-full bg-primary/30 cursor-pointer transition-colors" data-step="4"></div>
-            <div class="cl-dot h-2.5 w-2.5 rounded-full bg-primary/30 cursor-pointer transition-colors" data-step="5"></div>
-            <div class="cl-dot h-2.5 w-2.5 rounded-full bg-primary/30 cursor-pointer transition-colors" data-step="6"></div>
-          </div>
-
-          <div class="flex-1 overflow-y-auto px-4 pb-40 max-w-4xl mx-auto w-full">
+          <div class="flex-1 overflow-y-auto px-4 pb-40 max-w-4xl mx-auto w-full pt-6">
             <!-- Step Title -->
             <div class="text-center mb-6">
               <h1 class="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display mb-1" data-i18n="exp.coulomb_law.title">Coulomb Yasası Deneyi</h1>
-              <p id="clStepDesc" class="text-slate-600 dark:text-slate-400 text-base" data-i18n="exp.coulomb_law.stepDesc">Adım 1: Parametreleri girin</p>
+              <p id="clStepDesc" class="text-slate-600 dark:text-slate-400 text-base" data-i18n="exp.coulomb_law.simDesc">Gerçek Zamanlı Simülasyon</p>
             </div>
 
             <!-- Visual Stage Area -->
@@ -343,23 +333,53 @@
               </div>
 
               <!-- Calculation Preview -->
-              <div class="grid grid-cols-1 gap-3 pt-4 border-t border-primary/10">
-                <h3 class="text-sm font-bold uppercase tracking-wider text-primary" data-i18n="exp.coulomb_law.calcPreview">Hesaplama Önizlemesi</h3>
-                <div class="bg-primary/5 dark:bg-primary/10 p-4 rounded-xl border border-primary/20 flex items-center justify-between">
-                  <div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium" data-i18n="exp.coulomb_law.elecForce">Elektrostatik Kuvvet (F)</p>
-                    <p id="clForcePreview" class="text-xl font-bold text-primary font-mono">0.000e+00 N</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-primary/10">
+                <!-- HUD Panel -->
+                <div class="space-y-3">
+                  <h3 class="text-sm font-bold uppercase tracking-wider text-primary" data-i18n="exp.coulomb_law.hud">Sistem Verileri</h3>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-primary/5 dark:bg-primary/10 p-3 rounded-xl border border-primary/20">
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="exp.coulomb_law.elecForce">Kuvvet (F)</p>
+                      <p id="clForcePreview" class="text-sm font-bold text-primary font-mono">0.00 N</p>
+                    </div>
+                    <div class="bg-emerald-50 dark:bg-emerald-900/10 p-3 rounded-xl border border-emerald-200/30">
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="exp.coulomb_law.realDistance">Mesafe (r)</p>
+                      <p id="clHudDist" class="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono">50.0 cm</p>
+                    </div>
+                    <div class="bg-sky-50 dark:bg-sky-900/10 p-3 rounded-xl border border-sky-200/30">
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="exp.coulomb_law.velocity1">Hız v₁</p>
+                      <p id="clHudVel1" class="text-sm font-bold text-sky-600 dark:text-sky-400 font-mono">0.000 m/s</p>
+                    </div>
+                    <div class="bg-amber-50 dark:bg-amber-900/10 p-3 rounded-xl border border-amber-200/30">
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="exp.coulomb_law.velocity2">Hız v₂</p>
+                      <p id="clHudVel2" class="text-sm font-bold text-amber-600 dark:text-amber-400 font-mono">0.000 m/s</p>
+                    </div>
                   </div>
-                  <span class="material-symbols-outlined text-primary text-3xl">electric_bolt</span>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="bg-sky-50 dark:bg-sky-900/10 p-3 rounded-xl border border-sky-200/30">
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium" data-i18n="exp.coulomb_law.accel1">İvme a₁</p>
-                    <p id="clAccel1" class="text-sm font-bold text-sky-600 dark:text-sky-400 font-mono">0.000e+00 m/s²</p>
-                  </div>
-                  <div class="bg-amber-50 dark:bg-amber-900/10 p-3 rounded-xl border border-amber-200/30">
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium" data-i18n="exp.coulomb_law.accel2">İvme a₂</p>
-                    <p id="clAccel2" class="text-sm font-bold text-amber-600 dark:text-amber-400 font-mono">0.000e+00 m/s²</p>
+
+                <!-- Conservation Panel -->
+                <div class="space-y-3">
+                  <h3 class="text-sm font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex justify-between items-center">
+                    <span data-i18n="exp.coulomb_law.conservationTitle">Yük Korunumu</span>
+                    <span id="clConservedBadge" class="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full tracking-normal" data-i18n="exp.coulomb_law.conserved">Korunuyor</span>
+                  </h3>
+                  <div class="bg-indigo-50 dark:bg-indigo-900/10 p-4 rounded-xl border border-indigo-200/50 flex flex-col justify-center h-[calc(100%-28px)]">
+                    <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-lg shadow-sm border border-slate-100 dark:border-white/5">
+                      <div class="text-center">
+                        <p class="text-[10px] text-slate-400 font-bold">q₁</p>
+                        <p id="clConsQ1" class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">5.0 µC</p>
+                      </div>
+                      <span class="text-slate-300 font-bold text-lg">+</span>
+                      <div class="text-center">
+                        <p class="text-[10px] text-slate-400 font-bold">q₂</p>
+                        <p id="clConsQ2" class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">-5.0 µC</p>
+                      </div>
+                      <span class="text-slate-300 font-bold text-lg">=</span>
+                      <div class="text-center">
+                        <p class="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold" data-i18n="exp.coulomb_law.totalQ">Toplam Yük</p>
+                        <p id="clConsTotal" class="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">0.0 µC</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -369,12 +389,20 @@
           <!-- Bottom Navigation -->
           <div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-primary/10 p-4 z-20">
             <div class="flex gap-4 max-w-4xl mx-auto w-full">
-              <button id="clPrevBtn" class="flex-1 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors" data-i18n="exp.coulomb_law.prev">
-                Önceki
+              <!-- Re-use the time input location as a HUD timer instead inside the nav panel so it's always visible -->
+              <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5 shadow-inner">
+                <span class="material-symbols-outlined text-slate-400 mr-2">timer</span>
+                <span id="clHudTime" class="font-mono text-lg font-bold text-slate-700 dark:text-slate-200">0.00 s</span>
+              </div>
+              
+              <button id="clSimResetBtn" class="flex-1 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">replay</span>
+                <span data-i18n="btn.reset">Sıfırla</span>
               </button>
-              <button id="clCalcBtn" class="flex-[2] bg-primary text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/30 hover:brightness-110 transition-all flex items-center justify-center gap-2">
-                <span data-i18n="exp.coulomb_law.calculate">Sonuçları Hesapla</span>
-                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+              <button id="clSimStartBtn" class="flex-[2] bg-primary text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/30 hover:brightness-110 transition-all flex items-center justify-center gap-2 relative overflow-hidden group">
+                <span id="clSimStartIcon" class="material-symbols-outlined text-lg relative z-10 transition-transform group-hover:scale-110">play_arrow</span>
+                <span id="clSimStartText" class="relative z-10" data-i18n="exp.coulomb_law.startSim">Simülasyonu Başlat</span>
+                <div class="absolute inset-0 bg-white/20 scale-x-0 origin-left transition-transform group-hover:scale-x-100"></div>
               </button>
             </div>
           </div>

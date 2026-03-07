@@ -95,10 +95,20 @@ const clQ2Label = $("#clQ2Label");
 const clForceType = $("#clForceType");
 const clSphere1 = $("#clSphere1");
 const clSphere2 = $("#clSphere2");
-const clPrevBtn = $("#clPrevBtn");
-const clCalcBtn = $("#clCalcBtn");
-const clStepDesc = $("#clStepDesc");
-const clProgressDots = $("#clProgressDots");
+
+// New Coulomb Simulation DOM refs
+const clHudTime = $("#clHudTime");
+const clHudDist = $("#clHudDist");
+const clHudVel1 = $("#clHudVel1");
+const clHudVel2 = $("#clHudVel2");
+const clConsQ1 = $("#clConsQ1");
+const clConsQ2 = $("#clConsQ2");
+const clConsTotal = $("#clConsTotal");
+const clConservedBadge = $("#clConservedBadge");
+const clSimStartBtn = $("#clSimStartBtn");
+const clSimStartIcon = $("#clSimStartIcon");
+const clSimStartText = $("#clSimStartText");
+const clSimResetBtn = $("#clSimResetBtn");
 
 // ─── App State (client-side mirror) ─────────────────────────────────
 const local = {
@@ -396,8 +406,7 @@ async function mountExperiment(expId) {
     clInputM2.value = data.state.mass2 ?? 10.0;
     clInputR.value = data.state.distance ?? 50.0;
     clInputT.value = data.state.time ?? 10.0;
-    updateCoulombPreview();
-    updateCoulombStep(data.state.currentStep || 1);
+    initCoulombSim();
   }
 
   local.logs = [];
@@ -460,165 +469,225 @@ resetBtn.addEventListener("click", async () => {
   loadReportItems();
 });
 
-// ─── Coulomb's Law — client-side preview / input handling ───────────
+// ─── Coulomb's Law Real-Time Simulation ─────────────────────────────
 const CL_K = 8.99e9;
+const CL_RADIUS = 0.05; // 5cm visual radius for collision
 
-function updateCoulombPreview() {
-  const q1_val = parseFloat(clInputQ1.value) || 0;
-  const q2_val = parseFloat(clInputQ2.value) || 0;
-  const m1_val = parseFloat(clInputM1.value) || 10;
-  const m2_val = parseFloat(clInputM2.value) || 10;
-  const r_val = Math.max(5, Math.abs(parseFloat(clInputR.value) || 50));
-  const t_val = parseFloat(clInputT.value) || 10;
+let clSimState = {
+  running: false,
+  t: 0,
+  targetT: 10,
+  q1: 0, q2: 0,
+  m1: 10, m2: 10,
+  p1: -0.25, p2: 0.25, // meters
+  v1: 0, v2: 0,
+  totalQ: 0,
+  collided: false,
+  r0: 0.5
+};
 
-  // Update badges
-  if ($("#clValQ1")) $("#clValQ1").textContent = q1_val.toFixed(1);
-  if ($("#clValQ2")) $("#clValQ2").textContent = q2_val.toFixed(1);
-  if ($("#clValM1")) $("#clValM1").textContent = m1_val.toString();
-  if ($("#clValM2")) $("#clValM2").textContent = m2_val.toString();
-  if ($("#clValR")) $("#clValR").textContent = r_val.toString();
-  if ($("#clValT")) $("#clValT").textContent = t_val.toString();
+function initCoulombSim() {
+  clSimState.running = false;
+  clSimState.t = 0;
+  clSimState.collided = false;
+  if(clSimStartIcon) clSimStartIcon.textContent = "play_arrow";
+  if(clSimStartText) clSimStartText.textContent = t("exp.coulomb_law.startSim") !== "exp.coulomb_law.startSim" ? t("exp.coulomb_law.startSim") : "Start Sim";
 
-  // Convert to SI units for math
-  const q1 = q1_val * 1e-6;
-  const q2 = q2_val * 1e-6;
-  const m1 = m1_val * 1e-3;
-  const m2 = m2_val * 1e-3;
-  const r  = r_val * 1e-2;
-  const t  = t_val * 1e-3;
+  clSimState.q1 = (parseFloat(clInputQ1.value) || 0) * 1e-6;
+  clSimState.q2 = (parseFloat(clInputQ2.value) || 0) * 1e-6;
+  clSimState.m1 = (parseFloat(clInputM1.value) || 10) * 1e-3;
+  clSimState.m2 = (parseFloat(clInputM2.value) || 10) * 1e-3;
+  clSimState.r0 = Math.max(0.05, Math.abs(parseFloat(clInputR.value) || 50) * 1e-2);
+  clSimState.targetT = Math.max(0.1, parseFloat(clInputT.value) || 10);
 
-  const force = (q1 !== 0 && q2 !== 0) ? CL_K * Math.abs(q1 * q2) / (r * r) : 0;
-  const a1 = m1 !== 0 ? force / Math.abs(m1) : 0;
-  const a2 = m2 !== 0 ? force / Math.abs(m2) : 0;
+  clSimState.p1 = -clSimState.r0 / 2;
+  clSimState.p2 = clSimState.r0 / 2;
+  clSimState.v1 = 0;
+  clSimState.v2 = 0;
+  clSimState.totalQ = clSimState.q1 + clSimState.q2;
 
-  clForcePreview.textContent = force.toExponential(2) + " N";
-  clAccel1.textContent = a1.toExponential(2) + " m/s²";
-  clAccel2.textContent = a2.toExponential(2) + " m/s²";
+  // Update badges in UI form
+  if ($("#clValQ1")) $("#clValQ1").textContent = (clSimState.q1 * 1e6).toFixed(1);
+  if ($("#clValQ2")) $("#clValQ2").textContent = (clSimState.q2 * 1e6).toFixed(1);
+  if ($("#clValM1")) $("#clValM1").textContent = (clSimState.m1 * 1e3).toFixed(1);
+  if ($("#clValM2")) $("#clValM2").textContent = (clSimState.m2 * 1e3).toFixed(1);
+  if ($("#clValR")) $("#clValR").textContent = (clSimState.r0 * 100).toFixed(1);
+  if ($("#clValT")) $("#clValT").textContent = clSimState.targetT.toFixed(1);
 
-  // Update sphere labels
-  clQ1Label.textContent = (q1_val > 0 ? "+" : "") + q1_val.toFixed(1) + " µC";
-  clQ2Label.textContent = (q2_val > 0 ? "+" : "") + q2_val.toFixed(1) + " µC";
+  renderCoulombHUD();
+}
 
-  // --- Dynamic Visual Updates ---
-  // 1. Distance Positioning (r_val: 5-100 -> span 10%-80%)
-  const span = 10 + (r_val / 100) * 70;
-  if ($("#clSphere1Rig")) $("#clSphere1Rig").style.left = `calc(50% - ${span/2}%)`;
-  if ($("#clSphere2Rig")) $("#clSphere2Rig").style.left = `calc(50% + ${span/2}%)`;
-  if ($("#clForceArrows")) $("#clForceArrows").style.width = `${span}%`;
+function renderCoulombHUD() {
+  const r = Math.abs(clSimState.p2 - clSimState.p1);
+  let F = 0;
+  if (r > 0.001) F = CL_K * Math.abs(clSimState.q1 * clSimState.q2) / (r * r);
 
-  // 2. Charge Scaling
-  const scale1 = 0.8 + (Math.abs(q1_val) / 10) * 0.5;
-  const scale2 = 0.8 + (Math.abs(q2_val) / 10) * 0.5;
-  clSphere1.style.transform = `scale(${scale1})`;
-  clSphere2.style.transform = `scale(${scale2})`;
+  if (clHudTime) clHudTime.textContent = clSimState.t.toFixed(2) + " s";
+  if (clHudDist) clHudDist.textContent = (r * 100).toFixed(1) + " cm";
+  if (clForcePreview) clForcePreview.textContent = F.toExponential(2) + " N";
+  if (clHudVel1) clHudVel1.textContent = clSimState.v1.toFixed(3) + " m/s";
+  if (clHudVel2) clHudVel2.textContent = clSimState.v2.toFixed(3) + " m/s";
+  if (clAccel1) clAccel1.textContent = (clSimState.m1 ? (F / clSimState.m1) : 0).toExponential(2) + " m/s²";
+  if (clAccel2) clAccel2.textContent = (clSimState.m2 ? (F / clSimState.m2) : 0).toExponential(2) + " m/s²";
 
-  // 3. Force Polarity and Colors
-  const product = q1_val * q2_val;
-  const color1 = q1_val > 0 ? "bg-primary text-white shadow-primary/40 shadow-[0_0_20px_rgba(0,0,0,0.2)]" : (q1_val < 0 ? "bg-slate-600 text-white shadow-slate-600/40 shadow-[0_0_20px_rgba(0,0,0,0.2)]" : "bg-slate-200 text-slate-500 shadow-none");
-  const color2 = q2_val > 0 ? "bg-primary text-white shadow-primary/40 shadow-[0_0_20px_rgba(0,0,0,0.2)]" : (q2_val < 0 ? "bg-slate-600 text-white shadow-slate-600/40 shadow-[0_0_20px_rgba(0,0,0,0.2)]" : "bg-slate-200 text-slate-500 shadow-none");
+  // Conservation Panel
+  if (clConsQ1) clConsQ1.textContent = (clSimState.q1 * 1e6).toFixed(2) + " µC";
+  if (clConsQ2) clConsQ2.textContent = (clSimState.q2 * 1e6).toFixed(2) + " µC";
+  if (clConsTotal) clConsTotal.textContent = (clSimState.totalQ * 1e6).toFixed(2) + " µC";
 
-  clSphere1.className = `size-14 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${color1}`;
-  clSphere2.className = `size-14 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${color2}`;
+  // Visuals - map 1 meter to 80% screen width (span = 80 * pos)
+  const left1 = 50 + (clSimState.p1 * 80);
+  const left2 = 50 + (clSimState.p2 * 80);
+  
+  if (clSphere1Rig) clSphere1Rig.style.left = `${left1}%`;
+  if (clSphere2Rig) clSphere2Rig.style.left = `${left2}%`;
+  
+  // Force Arrows visually centered between them
+  if (clForceArrows) {
+     clForceArrows.style.left = `${Math.min(left1, left2)}%`;
+     clForceArrows.style.width = `${Math.abs(left2 - left1)}%`;
+  }
 
+  // Charge scaling and colors
+  const scale1 = 0.8 + (Math.abs(clSimState.q1 * 1e6) / 10) * 0.5;
+  const scale2 = 0.8 + (Math.abs(clSimState.q2 * 1e6) / 10) * 0.5;
+  if (clSphere1) clSphere1.style.transform = `scale(${scale1})`;
+  if (clSphere2) clSphere2.style.transform = `scale(${scale2})`;
+  
+  if (clQ1Label) clQ1Label.textContent = (clSimState.q1 > 0 ? "+" : "") + (clSimState.q1 * 1e6).toFixed(1) + " µC";
+  if (clQ2Label) clQ2Label.textContent = (clSimState.q2 > 0 ? "+" : "") + (clSimState.q2 * 1e6).toFixed(1) + " µC";
+
+  const colorCls = (q) => q > 0 ? "bg-primary text-white shadow-primary/40 shadow-[0_0_20px_rgba(0,0,0,0.2)]" : (q < 0 ? "bg-slate-600 text-white shadow-slate-600/40 shadow-[0_0_20px_rgba(0,0,0,0.2)]" : "bg-slate-200 text-slate-500 shadow-none");
+  if (clSphere1) clSphere1.className = `size-14 rounded-full flex items-center justify-center font-bold transition-colors duration-150 ${colorCls(clSimState.q1)}`;
+  if (clSphere2) clSphere2.className = `size-14 rounded-full flex items-center justify-center font-bold transition-colors duration-150 ${colorCls(clSimState.q2)}`;
+
+  // Arrow rendering logic
   const leftArrow = $("#clForceArrowLeft");
   const rightArrow = $("#clForceArrowRight");
-  
-  if (q1_val === 0 || q2_val === 0) {
-    clForceType.textContent = t("force.none") !== "force.none" ? t("force.none") : "No Force";
+  if (clSimState.q1 === 0 || clSimState.q2 === 0) {
+    if (clForceType) clForceType.textContent = "—";
     if (leftArrow) leftArrow.style.opacity = 0;
     if (rightArrow) rightArrow.style.opacity = 0;
   } else {
     if (leftArrow) leftArrow.style.opacity = 0.8;
     if (rightArrow) rightArrow.style.opacity = 0.8;
-    // Logarithmic scale for arrow size (1N -> scale 0.5, 360N -> scale 2.0 approx)
-    const f_scale = Math.min(2.5, Math.max(0.6, 0.6 + Math.log10(force + 1) / 2));
-    
+    const f_scale = Math.min(2.5, Math.max(0.6, 0.6 + Math.log10(F + 1) / 2));
+    const product = clSimState.q1 * clSimState.q2;
     if (product < 0) {
-      clForceType.textContent = t("force.attractive");
+      if (clForceType) clForceType.textContent = t("force.attractive") !== "force.attractive" ? t("force.attractive") : "Elektrostatik Çekme";
       if (leftArrow) leftArrow.style.transform = `scaleX(${f_scale}) scaleY(${f_scale})`;
       if (rightArrow) rightArrow.style.transform = `scaleX(${-f_scale}) scaleY(${f_scale})`;
     } else {
-      clForceType.textContent = t("force.repulsive");
+      if (clForceType) clForceType.textContent = t("force.repulsive") !== "force.repulsive" ? t("force.repulsive") : "Elektrostatik İtme";
       if (leftArrow) leftArrow.style.transform = `scaleX(${-f_scale}) scaleY(${f_scale})`;
       if (rightArrow) rightArrow.style.transform = `scaleX(${f_scale}) scaleY(${f_scale})`;
     }
   }
 }
 
-function updateCoulombStep(step) {
-  local.clStep = step;
-  // Update progress dots
-  $$("#clProgressDots .cl-dot").forEach(dot => {
-    const ds = parseInt(dot.dataset.step, 10);
-    dot.classList.toggle("bg-primary", ds <= step);
-    dot.classList.toggle("bg-primary/30", ds > step);
-  });
-  // Update step description
-  const stepKey = `exp.coulomb_law.step${step}`;
-  const translated = t(stepKey);
-  clStepDesc.textContent = translated !== stepKey ? translated : `Step ${step}`;
+function clPhysicsStep(dt) {
+  if (!clSimState.running) return;
+  if (clSimState.t >= clSimState.targetT) {
+    clSimState.running = false;
+    if(clSimStartIcon) clSimStartIcon.textContent = "replay";
+    if(clSimStartText) clSimStartText.textContent = t("btn.reset") !== "btn.reset" ? t("btn.reset") : "Done";
+    addLog("Simülasyon tamamlandı.", "info");
+    return;
+  }
+
+  // Multiply visual dt by speed multiplier or run multiple substeps
+  const substeps = 10;
+  const subDt = dt / substeps;
+
+  for (let i = 0; i < substeps; i++) {
+    clSimState.t += subDt;
+    let r = Math.abs(clSimState.p2 - clSimState.p1);
+
+    // Collision & Conservation Check
+    if (r <= CL_RADIUS && !clSimState.collided) {
+      // Inelastic collision momentum transfer
+      const totalP = clSimState.m1 * clSimState.v1 + clSimState.m2 * clSimState.v2;
+      const v_final = totalP / (clSimState.m1 + clSimState.m2);
+      clSimState.v1 = v_final;
+      clSimState.v2 = v_final;
+
+      // Charge redistribution (Conservation of Charge)
+      const newQ = (clSimState.q1 + clSimState.q2) / 2;
+      clSimState.q1 = newQ;
+      clSimState.q2 = newQ;
+      clSimState.collided = true;
+      
+      // Bump the position slightly so they don't get stuck
+      const midpoint = (clSimState.p1 + clSimState.p2) / 2;
+      clSimState.p1 = midpoint - (CL_RADIUS / 2.01);
+      clSimState.p2 = midpoint + (CL_RADIUS / 2.01);
+
+      // Flash conservation badge
+      if (clConservedBadge) {
+        clConservedBadge.classList.replace("bg-green-500", "bg-indigo-500");
+        clConservedBadge.classList.add("scale-125", "shadow-lg");
+        setTimeout(() => {
+          clConservedBadge.classList.replace("bg-indigo-500", "bg-green-500");
+          clConservedBadge.classList.remove("scale-125", "shadow-lg");
+        }, 500);
+      }
+      addLog(`Yük Korundu! Aktarım tamamlandı.`, "primary");
+    }
+
+    // Forces
+    r = Math.max(CL_RADIUS, Math.abs(clSimState.p2 - clSimState.p1));
+    const F = CL_K * Math.abs(clSimState.q1 * clSimState.q2) / (r * r);
+    
+    // Direction logic 
+    const dir1To2 = Math.sign(clSimState.p2 - clSimState.p1) || 1;
+    const attract = (clSimState.q1 * clSimState.q2) < 0;
+
+    const F1 = attract ? F * dir1To2 : -F * dir1To2;
+    const F2 = attract ? -F * dir1To2 : F * dir1To2;
+
+    clSimState.v1 += (F1 / clSimState.m1) * subDt;
+    clSimState.v2 += (F2 / clSimState.m2) * subDt;
+    clSimState.p1 += clSimState.v1 * subDt;
+    clSimState.p2 += clSimState.v2 * subDt;
+    
+    // Hard boundaries (-0.5m to +0.5m) to prevent them flying off screen entirely
+    if (clSimState.p1 < -0.6) { clSimState.p1 = -0.6; clSimState.v1 *= -0.5; }
+    if (clSimState.p1 > 0.6) { clSimState.p1 = 0.6; clSimState.v1 *= -0.5; }
+    if (clSimState.p2 < -0.6) { clSimState.p2 = -0.6; clSimState.v2 *= -0.5; }
+    if (clSimState.p2 > 0.6) { clSimState.p2 = 0.6; clSimState.v2 *= -0.5; }
+  }
+  
+  renderCoulombHUD();
 }
 
-// Wire Coulomb's Law inputs for live preview
+// Input wiring: If not running, typing/sliding updates start configuration directly
 [clInputQ1, clInputQ2, clInputM1, clInputM2, clInputR, clInputT].forEach(inp => {
-  inp.addEventListener("input", () => {
-    updateCoulombPreview();
-    // Also push the value to backend state
-    const fieldMap = {
-      clInputQ1: "q1", clInputQ2: "q2",
-      clInputM1: "mass1", clInputM2: "mass2",
-      clInputR: "distance", clInputT: "time",
-    };
-    const field = fieldMap[inp.id];
-    const val = parseFloat(inp.value);
-    if (field && !isNaN(val)) {
-      api(`/api/experiments/coulomb_law/update`, {
-        method: "POST",
-        body: JSON.stringify({ field, value: val }),
-      });
+  if (inp) inp.addEventListener("input", () => {
+    if (!clSimState.running && clSimState.t === 0) {
+      initCoulombSim(); 
+      // Optionally notify backend for sync if needed, but not strictly required for local sim
+      const val = parseFloat(inp.value);
+      if (!isNaN(val)) api(`/api/experiments/coulomb_law/update`, { method: "POST", body: JSON.stringify({ field: inp.id.replace('clInput', '').toLowerCase(), value: val }) });
     }
   });
 });
 
-// Coulomb's Law buttons
-clCalcBtn.addEventListener("click", async () => {
-  const data = await api(`/api/experiments/coulomb_law/action`, {
-    method: "POST",
-    body: JSON.stringify({ action: "calculate" }),
+if (clSimStartBtn) {
+  clSimStartBtn.addEventListener("click", () => {
+    if (clSimState.t >= clSimState.targetT) {
+      initCoulombSim();
+      clSimState.running = true;
+    } else {
+      clSimState.running = !clSimState.running;
+    }
+    clSimStartIcon.textContent = clSimState.running ? "pause" : "play_arrow";
+    clSimStartText.textContent = clSimState.running ? (t("btn.pause") !== "btn.pause" ? t("btn.pause") : "Duraklat") : (t("btn.run") !== "btn.run" ? t("btn.run") : "Devam");
   });
-  if (data.computed) {
-    clForcePreview.textContent = data.computed.forceFormatted || "0 N";
-    clAccel1.textContent = data.computed.a1Formatted || "0 m/s²";
-    clAccel2.textContent = data.computed.a2Formatted || "0 m/s²";
-  }
-  if (data.log) addLog(t(data.log) !== data.log ? t(data.log) : data.log, "primary");
-  // Advance step
-  const nextData = await api(`/api/experiments/coulomb_law/action`, {
-    method: "POST",
-    body: JSON.stringify({ action: "nextStep" }),
-  });
-  if (nextData.state) updateCoulombStep(nextData.state.currentStep);
-});
+}
 
-clPrevBtn.addEventListener("click", async () => {
-  const data = await api(`/api/experiments/coulomb_law/action`, {
-    method: "POST",
-    body: JSON.stringify({ action: "prevStep" }),
-  });
-  if (data.state) updateCoulombStep(data.state.currentStep);
-});
-
-// Progress dot clicks
-if (clProgressDots) {
-  clProgressDots.addEventListener("click", async (e) => {
-    const dot = e.target.closest(".cl-dot");
-    if (!dot) return;
-    const step = parseInt(dot.dataset.step, 10);
-    const data = await api(`/api/experiments/coulomb_law/action`, {
-      method: "POST",
-      body: JSON.stringify({ action: "setStep", params: { step } }),
-    });
-    if (data.state) updateCoulombStep(data.state.currentStep);
+if (clSimResetBtn) {
+  clSimResetBtn.addEventListener("click", () => {
+    initCoulombSim();
   });
 }
 
@@ -627,6 +696,10 @@ let lastT = performance.now();
 function tick(frameT) {
   const dt = Math.min(0.05, (frameT - lastT) / 1000);
   lastT = frameT;
+
+  if (local.activeExpId === "coulomb_law") {
+     clPhysicsStep(dt);
+  }
 
   if (local.running && local.activeExpId === "electrostatics") {
     const stiffness = 18, damping = 10;
