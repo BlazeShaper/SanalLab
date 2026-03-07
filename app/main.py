@@ -27,11 +27,32 @@ app.include_router(reports.router)
 app.include_router(files.router)
 
 
+from fastapi.responses import RedirectResponse
+from app.experiments.registry import REGISTRY, get_experiment
+
 @app.on_event("startup")
 def on_startup():
     init_db()
 
-
 @app.get("/")
-async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+async def index():
+    return RedirectResponse(url="/experiments/electrostatics")
+
+@app.get("/experiments/{exp_id}")
+async def experiment_page(exp_id: str, request: Request):
+    exp = get_experiment(exp_id)
+    if exp is None:
+        return {"error": "not_found"}
+    
+    # Pass all active experiments to populate the dropdown
+    experiments_list = [{"id": e.id, "name": e.name} for e in REGISTRY.values()]
+    exp_name = exp.name
+    
+    # We expect template files to be named identically to the exp_id
+    template_name = f"{exp_id}.html"
+    return templates.TemplateResponse(template_name, {
+        "request": request,
+        "exp_id": exp.id,
+        "exp_name": exp_name,
+        "experiments": experiments_list
+    })

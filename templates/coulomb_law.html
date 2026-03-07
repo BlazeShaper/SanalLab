@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}Coulomb Yasası - İnteraktif Fizik Laboratuvarı{% endblock %}
+
+{% block experiment_name %}Coulomb Yasası{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Simulation Stage ─────────────────────────────── */
+  #simCanvas {
+    position: relative;
+    width: 100%;
+    height: 220px;
+  }
+
+  .sim-track {
+    position: absolute;
+    top: 50%;
+    left: 4%;
+    right: 4%;
+    height: 2px;
+    background: linear-gradient(to right, #cbd5e1, #94a3b8, #cbd5e1);
+    border-radius: 9999px;
+    transform: translateY(-50%);
+  }
+
+  /* ruler ticks */
+  .sim-track::before,
+  .sim-track::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    width: 2px;
+    height: 14px;
+    background: #94a3b8;
+  }
+  .sim-track::before { left: 0; }
+  .sim-track::after  { right: 0; }
+
+  .sim-sphere-rig {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: left 0.016s linear;
+  }
+
+  .sim-sphere {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+    color: #fff;
+    user-select: none;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 8px 24px rgba(0,0,0,0.18);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+
+  .sim-sphere.positive { background: radial-gradient(circle at 35% 35%, #ff7a38, #ec5b13); }
+  .sim-sphere.negative { background: radial-gradient(circle at 35% 35%, #6b7280, #374151); }
+  .sim-sphere.neutral  { background: radial-gradient(circle at 35% 35%, #cbd5e1, #94a3b8); }
+
+  .sim-charge-label {
+    font-size: 10px;
+    font-family: monospace;
+    font-weight: 700;
+    white-space: nowrap;
+    color: #475569;
+  }
+  .dark .sim-charge-label { color: #94a3b8; }
+
+  /* Force arrows */
+  #simArrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+    transition: left 0.016s linear, width 0.016s linear;
+  }
+
+  .sim-arrow {
+    font-size: 28px;
+    color: #ec5b13;
+    opacity: 0.85;
+    line-height: 1;
+    transition: transform 0.3s;
+  }
+
+  /* Distance ribbon */
+  #simDistRibbon {
+    position: absolute;
+    top: calc(50% - 46px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    transition: left 0.016s linear, width 0.016s linear;
+  }
+
+  #simDistLine {
+    height: 1px;
+    background: #94a3b8;
+    width: 100%;
+    position: relative;
+  }
+  #simDistLine::before,
+  #simDistLine::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 1px;
+    height: 7px;
+    background: #94a3b8;
+  }
+  #simDistLine::before { left: 0; }
+  #simDistLine::after  { right: 0; }
+
+  #simDistLabel {
+    font-size: 10px;
+    font-family: monospace;
+    font-weight: 700;
+    color: #64748b;
+    margin-top: 3px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+  .dark #simDistLabel { background: rgba(34,22,16,0.85); color: #94a3b8; }
+
+  /* Live readout strip */
+  .live-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .live-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .dark .live-card { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+
+  .live-card-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+  }
+
+  .live-card-value {
+    font-size: 12px;
+    font-family: monospace;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .dark .live-card-value { color: #f1f5f9; }
+
+  .live-card-value.accent-orange { color: #ec5b13; }
+  .live-card-value.accent-sky    { color: #0ea5e9; }
+  .live-card-value.accent-amber  { color: #d97706; }
+  .live-card-value.accent-purple { color: #7c3aed; }
+
+  /* Kinematics panels */
+  .kin-panel {
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+  }
+  .kin-panel.sphere1 { background: rgba(14,165,233,0.06); border-color: rgba(14,165,233,0.15); }
+  .kin-panel.sphere2 { background: rgba(217,119,6,0.06);  border-color: rgba(217,119,6,0.15);  }
+</style>
+{% endblock %}
+
+{% block sidebar_controls %}
+<!-- ... Couloumb Law Sidebar Controls ... -->
+<div class="space-y-4">
+  <div class="flex flex-col gap-1.5">
+    <div class="flex justify-between items-center">
+      <label class="slider-label" data-i18n="exp.coulomb_law.q1">Yük q₁ (µC)</label>
+      <span id="clValQ1" class="slider-val-badge">5.0</span>
+    </div>
+    <input id="clInputQ1" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" type="range" min="-10" max="10" step="0.5" value="5" />
+    <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>-10</span><span>+10</span></div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="flex justify-between items-center">
+      <label class="slider-label" data-i18n="exp.coulomb_law.q2">Yük q₂ (µC)</label>
+      <span id="clValQ2" class="slider-val-badge">-5.0</span>
+    </div>
+    <input id="clInputQ2" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" type="range" min="-10" max="10" step="0.5" value="-5" />
+    <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>-10</span><span>+10</span></div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="flex justify-between items-center">
+      <label class="slider-label" data-i18n="exp.coulomb_law.mass1">Kütle m₁ (g)</label>
+      <span id="clValM1" class="slider-val-badge" style="background:rgba(14,165,233,0.1);color:#0ea5e9">10</span>
+    </div>
+    <input id="clInputM1" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer" style="accent-color:#0ea5e9" type="range" min="1" max="500" step="1" value="10" />
+    <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>1</span><span>500</span></div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="flex justify-between items-center">
+      <label class="slider-label" data-i18n="exp.coulomb_law.mass2">Kütle m₂ (g)</label>
+      <span id="clValM2" class="slider-val-badge" style="background:rgba(217,119,6,0.1);color:#d97706">10</span>
+    </div>
+    <input id="clInputM2" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer" style="accent-color:#d97706" type="range" min="1" max="500" step="1" value="10" />
+    <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>1</span><span>500</span></div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="flex justify-between items-center">
+      <label class="slider-label" data-i18n="exp.coulomb_law.distance">Başlangıç r₀ (cm)</label>
+      <span id="clValR" class="slider-val-badge" style="background:rgba(16,185,129,0.1);color:#10b981">50</span>
+    </div>
+    <input id="clInputR" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer" style="accent-color:#10b981" type="range" min="5" max="200" step="1" value="50" />
+    <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>5</span><span>200</span></div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="flex justify-between items-center">
+      <label class="slider-label" data-i18n="exp.coulomb_law.time">Süre t (s)</label>
+      <span id="clValT" class="slider-val-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed">2.0</span>
+    </div>
+    <input id="clInputT" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer" style="accent-color:#7c3aed" type="range" min="0.5" max="20" step="0.5" value="2" />
+    <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>0.5</span><span>20</span></div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="pt-2 space-y-2">
+    <button id="clStartBtn" class="sim-ctrl-btn start">
+      <span class="material-symbols-outlined text-base">play_arrow</span>
+      <span data-i18n="btn.startSim">Simülasyonu Başlat</span>
+    </button>
+    <div class="grid grid-cols-2 gap-2">
+      <button id="clPauseBtn" class="sim-ctrl-btn pause" disabled>
+        <span id="clPauseIcon" class="material-symbols-outlined text-base">pause</span>
+        <span id="clPauseText" data-i18n="btn.pause">Duraklat</span>
+      </button>
+      <button id="clResetBtn" class="sim-ctrl-btn reset">
+        <span class="material-symbols-outlined text-base">replay</span>
+        <span data-i18n="btn.reset">Sıfırla</span>
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block experiment_stage %}
+<div id="coulombLawStage" class="flex-1 canvas-bg flex flex-col items-center justify-center px-6 py-4 relative">
+  <!-- Main simulator card -->
+  <div class="w-full max-w-3xl bg-white dark:bg-slate-800/50 rounded-2xl border border-primary/10 shadow-sm overflow-hidden">
+    
+    <!-- Title bar -->
+    <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-white/5">
+      <div>
+        <h2 class="text-base font-bold" data-i18n="exp.coulomb_law.title">Coulomb Yasası Simülatörü</h2>
+        <p id="clStatusMsg" class="text-xs text-slate-400 mt-0.5" data-i18n="sim.status.idle">Parametreleri girin ve simülasyonu başlatın</p>
+      </div>
+      <!-- Force type badge -->
+      <div id="clForceTypeBadge" class="px-3 py-1 rounded-full text-xs font-bold border" style="background:rgba(236,91,19,0.08);border-color:rgba(236,91,19,0.2);color:#ec5b13">
+        <span id="clForceTypeText" data-i18n="force.attractive">Çekme Kuvveti</span>
+      </div>
+    </div>
+
+    <!-- Simulation canvas -->
+    <div class="px-5 pt-6 pb-4">
+      <div id="simCanvas" class="relative select-none" style="height:210px;">
+        <!-- Track -->
+        <div class="sim-track"></div>
+
+        <!-- Distance ribbon (sits above the track) -->
+        <div id="simDistRibbon" style="left:22%; width:56%;">
+          <div id="simDistLine"></div>
+          <span id="simDistLabel">r = 50.0 cm</span>
+        </div>
+
+        <!-- Sphere 1 rig -->
+        <div id="simSphere1Rig" class="sim-sphere-rig" style="left:22%;">
+          <div id="simSphere1" class="sim-sphere positive">q₁</div>
+          <span id="simQ1Label" class="sim-charge-label">+5.0 µC</span>
+        </div>
+
+        <!-- Force arrows (centred between spheres) -->
+        <div id="simArrows" style="left:22%; width:56%;">
+          <span id="simArrowLeft" class="sim-arrow material-symbols-outlined">arrow_back</span>
+          <span id="simArrowRight" class="sim-arrow material-symbols-outlined">arrow_forward</span>
+        </div>
+
+        <!-- Sphere 2 rig -->
+        <div id="simSphere2Rig" class="sim-sphere-rig" style="left:78%;">
+          <div id="simSphere2" class="sim-sphere negative">q₂</div>
+          <span id="simQ2Label" class="sim-charge-label">-5.0 µC</span>
+        </div>
+      </div>
+
+      <!-- Live strip -->
+      <div class="live-strip mt-3 mb-3" style="grid-template-columns: repeat(2,1fr) repeat(2,1fr);">
+        <div class="live-card col-span-1">
+          <span class="live-card-label" data-i18n="readout.elapsed">Geçen Süre</span>
+          <span id="simElapsed" class="live-card-value accent-purple">0.000 s</span>
+        </div>
+        <div class="live-card col-span-1">
+          <span class="live-card-label" data-i18n="readout.totalForce">Kuvvet (F)</span>
+          <span id="simForce" class="live-card-value accent-orange">0.00 N</span>
+        </div>
+        <div class="live-card col-span-2">
+          <span class="live-card-label" data-i18n="readout.distance">Anlık Mesafe</span>
+          <span id="simDistance" class="live-card-value" style="color:#10b981;">50.00 cm</span>
+        </div>
+      </div>
+
+      <!-- Kinematics panels -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="kin-panel sphere1">
+          <div class="text-xs font-bold text-sky-600 dark:text-sky-400 mb-2">Küre q₁</div>
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center text-xs text-sky-600 dark:text-sky-400">
+              <span class="text-slate-500">İvme a₁</span> <span id="simA1" class="font-mono font-bold">0 m/s²</span>
+            </div>
+            <div class="flex justify-between items-center text-xs text-sky-600 dark:text-sky-400">
+              <span class="text-slate-500">Hız v₁</span> <span id="simV1" class="font-mono font-bold">0 m/s</span>
+            </div>
+            <div class="flex justify-between items-center text-xs text-sky-600 dark:text-sky-400">
+              <span class="text-slate-500">Yer. s₁</span> <span id="simS1" class="font-mono font-bold">0.000 m</span>
+            </div>
+          </div>
+        </div>
+        <div class="kin-panel sphere2">
+          <div class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-2">Küre q₂</div>
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center text-xs text-amber-600 dark:text-amber-400">
+              <span class="text-slate-500">İvme a₂</span> <span id="simA2" class="font-mono font-bold">0 m/s²</span>
+            </div>
+            <div class="flex justify-between items-center text-xs text-amber-600 dark:text-amber-400">
+              <span class="text-slate-500">Hız v₂</span> <span id="simV2" class="font-mono font-bold">0 m/s</span>
+            </div>
+            <div class="flex justify-between items-center text-xs text-amber-600 dark:text-amber-400">
+              <span class="text-slate-500">Yer. s₂</span> <span id="simS2" class="font-mono font-bold">0.000 m</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block learning_summary %}
+<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="learning.loading">Yükleniyor…</p>
+{% endblock %}
+
+{% block live_readouts %}
+  <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+    <span class="text-xs font-medium text-slate-500" data-i18n="readout.totalForce">Toplam Kuvvet (F)</span>
+    <span id="forceReadout" class="text-sm font-mono font-bold text-primary">0.000 N</span>
+  </div>
+  <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+    <span class="text-xs font-medium text-slate-500">q₁ Yükü</span>
+    <span id="q1Readout" class="text-sm font-mono font-bold text-sky-600 dark:text-sky-400">+5.0 µC</span>
+  </div>
+  <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+    <span class="text-xs font-medium text-slate-500">q₂ Yükü</span>
+    <span id="q2Readout" class="text-sm font-mono font-bold text-amber-700 dark:text-amber-500">-5.0 µC</span>
+  </div>
+{% endblock %}
+
+{% block math_expression %}
+<div class="pt-4">
+  <div class="p-4 rounded-xl bg-slate-900 text-white flex flex-col items-center text-center">
+    <p class="text-[11px] font-bold opacity-60 uppercase mb-2" data-i18n="panel.mathExpression">Matematik İfadesi</p>
+    <div class="font-serif italic text-lg tracking-widest">F = k · (|q₁|·|q₂|) / r²</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block report_expressions %}
+  <option value="coulomb">Coulomb Yasası: F = k · (|q₁|·|q₂|) / r²</option>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/coulomb_law.js?v=2"></script>
+{% endblock %}

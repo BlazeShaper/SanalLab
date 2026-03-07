@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Elektriklenme Deneyi - İnteraktif Fizik Laboratuvarı{% endblock %}
+
+{% block experiment_name %}Elektriklenme{% endblock %}
+
+{% block sidebar_controls %}
+<div id="controlsMount" class="space-y-3"></div>
+
+<!-- Global sim buttons -->
+<div class="grid grid-cols-2 gap-3 pt-3 mt-4 border-t border-slate-100 dark:border-white/5">
+  <button id="pauseBtn" class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 transition-colors">
+    <span id="pauseIcon" class="material-symbols-outlined text-primary mb-1">pause_circle</span>
+    <span id="pauseText" class="text-xs font-bold" data-i18n="btn.pause">Duraklat</span>
+  </button>
+  <button id="resetBtn" class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 transition-colors">
+    <span class="material-symbols-outlined text-slate-400 mb-1">replay</span>
+    <span class="text-xs font-bold" data-i18n="btn.reset">Sıfırla</span>
+  </button>
+</div>
+{% endblock %}
+
+{% block experiment_stage %}
+<div id="electrostaticsStage" class="flex-1 canvas-bg relative overflow-hidden flex items-center justify-center">
+  <div class="relative w-[600px] h-[400px] flex items-start justify-center gap-32">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-slate-400/30 rounded-full"></div>
+
+    <!-- Placeholder overlay -->
+    <div id="placeholderOverlay" class="hidden absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-black/40 backdrop-blur-[1px] z-40">
+      <div class="max-w-md p-6 rounded-2xl bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 shadow-xl text-center">
+        <div class="flex items-center justify-center mb-3">
+          <span class="material-symbols-outlined text-primary text-3xl">construction</span>
+        </div>
+        <h3 class="text-lg font-extrabold" data-i18n="placeholder.title">Deney modülü henüz uygulanmadı</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2" data-i18n="placeholder.desc">
+          Bu bir yer tutucudur.
+        </p>
+      </div>
+    </div>
+
+    <!-- Left Rod (Glass) -->
+    <div id="glassRig" class="flex flex-col items-center" style="transform: rotate(2deg); transform-origin: top center;">
+      <div class="w-1 h-32 bg-slate-300 dark:bg-slate-700 origin-top"></div>
+      <div class="w-4 h-48 bg-sky-200/50 dark:bg-sky-400/20 border-2 border-sky-300/50 rounded-full shadow-lg -mt-1 flex flex-col items-center justify-around py-4">
+        <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
+        <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
+        <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
+      </div>
+      <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="label.glassRod">Cam Çubuk</span>
+    </div>
+
+    <!-- Right Rod (Plastic) -->
+    <div id="plasticRig" class="flex flex-col items-center" style="transform: rotate(-2deg); transform-origin: top center;">
+      <div class="w-1 h-32 bg-slate-300 dark:bg-slate-700 origin-top"></div>
+      <div class="w-4 h-48 bg-amber-900/40 border-2 border-amber-950/20 rounded-full shadow-lg -mt-1 flex flex-col items-center justify-around py-4">
+        <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
+        <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
+        <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
+      </div>
+      <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="label.plasticRod">Plastik Çubuk</span>
+    </div>
+
+    <!-- Prop Cloths -->
+    <div class="absolute bottom-10 left-10 text-center">
+      <div class="w-12 h-12 bg-white dark:bg-white/10 rounded-lg shadow-sm flex items-center justify-center border border-slate-200 dark:border-white/10 mb-2">
+        <span class="material-symbols-outlined text-sky-400">grid_guides</span>
+      </div>
+      <span class="text-[10px] font-bold text-slate-400 uppercase" data-i18n="label.silk">İpek</span>
+    </div>
+    <div class="absolute bottom-10 right-10 text-center">
+      <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg shadow-sm flex items-center justify-center border border-amber-200 dark:border-amber-900/50 mb-2">
+        <span class="material-symbols-outlined text-amber-700">texture</span>
+      </div>
+      <span class="text-[10px] font-bold text-slate-400 uppercase" data-i18n="label.wool">Yün</span>
+    </div>
+
+    <!-- Force Arrow -->
+    <div id="forceGroup" class="absolute top-[280px] left-1/2 -translate-x-1/2 flex items-center gap-4" style="display:none;">
+      <div class="w-16 h-0.5 bg-primary relative flex items-center">
+        <div class="absolute -left-1 w-2 h-2 rotate-45 border-l-2 border-b-2 border-primary"></div>
+      </div>
+      <span id="forceLabel" class="text-[10px] font-mono text-primary font-bold">Çekme Kuvveti</span>
+      <div class="w-16 h-0.5 bg-primary relative flex items-center">
+        <div class="absolute -right-1 w-2 h-2 rotate-45 border-r-2 border-t-2 border-primary"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block learning_summary %}
+<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="learning.loading">Yükleniyor…</p>
+{% endblock %}
+
+{% block live_readouts %}
+  <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+    <span class="text-xs font-medium text-slate-500" data-i18n="readout.totalForce">Toplam Kuvvet (F)</span>
+    <span id="forceReadout" class="text-sm font-mono font-bold text-primary">0.000 N</span>
+  </div>
+  <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+    <span class="text-xs font-medium text-slate-500" data-i18n="readout.glassCharge">Cam Yükü (Q1)</span>
+    <span id="q1Readout" class="text-sm font-mono font-bold text-sky-600 dark:text-sky-400">+0.0 µC</span>
+  </div>
+  <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
+    <span class="text-xs font-medium text-slate-500" data-i18n="readout.plasticCharge">Plastik Yükü (Q2)</span>
+    <span id="q2Readout" class="text-sm font-mono font-bold text-amber-700 dark:text-amber-500">0.0 µC</span>
+  </div>
+{% endblock %}
+
+{% block math_expression %}
+<div class="pt-4">
+  <div class="p-4 rounded-xl bg-slate-900 text-white flex flex-col items-center text-center">
+    <p class="text-[11px] font-bold opacity-60 uppercase mb-2" data-i18n="panel.mathExpression">Matematik İfadesi</p>
+    <div class="font-serif italic text-lg tracking-widest">F = k · (|q₁|·|q₂|) / r²</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block report_expressions %}
+  <option value="coulomb">Coulomb Yasası: F = k · (|q₁|·|q₂|) / r²</option>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/electrostatics.js?v=2"></script>
+{% endblock %}

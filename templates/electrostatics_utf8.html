@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="tr">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>İnteraktif Fizik Laboratuvarı</title>
+  <title>─░nteraktif Fizik Laboratuvar─▒</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
@@ -51,7 +51,7 @@
           <span class="material-symbols-outlined block">science</span>
         </div>
         <div class="flex flex-col leading-tight">
-          <h1 class="text-xl font-bold tracking-tight" data-i18n="header.title">İnteraktif Fizik Laboratuvarı</h1>
+          <h1 class="text-xl font-bold tracking-tight" data-i18n="header.title">─░nteraktif Fizik Laboratuvar─▒</h1>
           <span id="activeExperimentName"
             class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tracking-wide"></span>
         </div>
@@ -77,14 +77,14 @@
               class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
           </span>
-          <span id="statusText" data-i18n="status.running">Simülasyon: Çalışıyor</span>
+          <span id="statusText" data-i18n="status.running">Sim├╝lasyon: ├çal─▒┼ş─▒yor</span>
         </div>
       </nav>
 
       <div class="flex items-center gap-4">
         <button id="langToggleBtn" onclick="toggleLang(); if(typeof onLangChanged==='function') onLangChanged();"
           class="px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-colors flex items-center gap-1.5"
-          title="Dili Değiştir">
+          title="Dili De─şi┼ştir">
           <span class="material-symbols-outlined text-sm">translate</span>
           <span data-i18n="lang.toggle">EN</span>
         </button>
@@ -120,7 +120,7 @@
               <button id="resetBtn"
                 class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 transition-colors">
                 <span class="material-symbols-outlined text-slate-400 mb-1">replay</span>
-                <span class="text-xs font-bold" data-i18n="btn.reset">Sıfırla</span>
+                <span class="text-xs font-bold" data-i18n="btn.reset">S─▒f─▒rla</span>
               </button>
             </div>
           </div>
@@ -128,24 +128,24 @@
           <!-- File Manager -->
           <div>
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" data-i18n="sidebar.fileManager">
-              Dosya Yöneticisi</h3>
+              Dosya Y├Âneticisi</h3>
             <div id="fileDropZone" class="file-drop-zone mb-3">
               <span class="material-symbols-outlined text-slate-400 text-2xl mb-1 block">upload_file</span>
-              <span class="text-xs text-slate-500" data-i18n="file.dropHint">Dosya sürükle veya tıkla</span>
+              <span class="text-xs text-slate-500" data-i18n="file.dropHint">Dosya s├╝r├╝kle veya t─▒kla</span>
               <input id="fileInput" type="file" class="hidden" />
             </div>
             <button id="uploadBtn"
               class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all text-xs font-bold mb-3 disabled:opacity-40 disabled:cursor-not-allowed"
               disabled>
               <span class="material-symbols-outlined text-sm">cloud_upload</span>
-              <span data-i18n="file.upload">Seçili Dosyayı Yükle</span>
+              <span data-i18n="file.upload">Se├ğili Dosyay─▒ Y├╝kle</span>
             </button>
             <div id="fileList" class="space-y-2 max-h-48 overflow-y-auto"></div>
           </div>
 
           <div class="pt-2">
             <div class="text-[10px] text-slate-400 leading-relaxed" data-i18n="sidebar.footer">
-              Tüm işlemler FastAPI backend ile gerçekleştirilir.
+              T├╝m i┼şlemler FastAPI backend ile ger├ğekle┼ştirilir.
             </div>
           </div>
         </div>
@@ -154,7 +154,8 @@
       <!-- Center Stage -->
       <main class="flex-1 flex flex-col bg-slate-50 dark:bg-background-dark/50 relative">
         <!-- ========== Electrostatics Stage ========== -->
-        <div id="electrostaticsStage" class="flex-1 canvas-bg relative overflow-hidden flex items-center justify-center">
+        <div id="electrostaticsStage"
+          class="flex-1 canvas-bg relative overflow-hidden flex items-center justify-center">
           <div class="relative w-[600px] h-[400px] flex items-start justify-center gap-32">
             <div class="absolute top-0 left-0 right-0 h-1 bg-slate-400/30 rounded-full"></div>
 
@@ -166,9 +167,9 @@
                 <div class="flex items-center justify-center mb-3">
                   <span class="material-symbols-outlined text-primary text-3xl">construction</span>
                 </div>
-                <h3 class="text-lg font-extrabold" data-i18n="placeholder.title">Deney modülü henüz uygulanmadı</h3>
+                <h3 class="text-lg font-extrabold" data-i18n="placeholder.title">Deney mod├╝l├╝ hen├╝z uygulanmad─▒</h3>
                 <p class="text-sm text-slate-600 dark:text-slate-400 mt-2" data-i18n="placeholder.desc">
-                  Bu bir yer tutucudur. Çalışan bir simülasyon görmek için Elektrostatik'i seçin.
+                  Bu bir yer tutucudur. ├çal─▒┼şan bir sim├╝lasyon g├Ârmek i├ğin Elektrostatik'i se├ğin.
                 </p>
               </div>
             </div>
@@ -184,7 +185,7 @@
                 <span class="charge-symbol text-[10px] font-bold text-sky-600 dark:text-sky-300 opacity-40">+</span>
               </div>
               <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500"
-                data-i18n="label.glassRod">Cam Çubuk</span>
+                data-i18n="label.glassRod">Cam ├çubuk</span>
             </div>
 
             <!-- Right Rod (Plastic) -->
@@ -198,7 +199,7 @@
                 <span class="charge-symbol text-[10px] font-bold text-amber-100 opacity-40">-</span>
               </div>
               <span class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500"
-                data-i18n="label.plasticRod">Plastik Çubuk</span>
+                data-i18n="label.plasticRod">Plastik ├çubuk</span>
             </div>
 
             <!-- Prop Cloths -->
@@ -207,14 +208,14 @@
                 class="w-12 h-12 bg-white dark:bg-white/10 rounded-lg shadow-sm flex items-center justify-center border border-slate-200 dark:border-white/10 mb-2">
                 <span class="material-symbols-outlined text-sky-400">grid_guides</span>
               </div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase" data-i18n="label.silk">İpek</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase" data-i18n="label.silk">─░pek</span>
             </div>
             <div class="absolute bottom-10 right-10 text-center">
               <div
                 class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg shadow-sm flex items-center justify-center border border-amber-200 dark:border-amber-900/50 mb-2">
                 <span class="material-symbols-outlined text-amber-700">texture</span>
               </div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase" data-i18n="label.wool">Yün</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase" data-i18n="label.wool">Y├╝n</span>
             </div>
 
             <!-- Force Arrow -->
@@ -223,7 +224,7 @@
               <div class="w-16 h-0.5 bg-primary relative flex items-center">
                 <div class="absolute -left-1 w-2 h-2 rotate-45 border-l-2 border-b-2 border-primary"></div>
               </div>
-              <span id="forceLabel" class="text-[10px] font-mono text-primary font-bold">Çekme Kuvveti</span>
+              <span id="forceLabel" class="text-[10px] font-mono text-primary font-bold">├çekme Kuvveti</span>
               <div class="w-16 h-0.5 bg-primary relative flex items-center">
                 <div class="absolute -right-1 w-2 h-2 rotate-45 border-r-2 border-t-2 border-primary"></div>
               </div>
@@ -236,41 +237,54 @@
           <div class="flex-1 overflow-y-auto px-4 pb-40 max-w-4xl mx-auto w-full pt-6">
             <!-- Step Title -->
             <div class="text-center mb-6">
-              <h1 class="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display mb-1" data-i18n="exp.coulomb_law.title">Coulomb Yasası Deneyi</h1>
-              <p id="clStepDesc" class="text-slate-600 dark:text-slate-400 text-base" data-i18n="exp.coulomb_law.simDesc">Gerçek Zamanlı Simülasyon</p>
+              <h1 class="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display mb-1"
+                data-i18n="exp.coulomb_law.title">Coulomb Yasas─▒ Deneyi</h1>
+              <p id="clStepDesc" class="text-slate-600 dark:text-slate-400 text-base"
+                data-i18n="exp.coulomb_law.simDesc">Ger├ğek Zamanl─▒ Sim├╝lasyon</p>
             </div>
 
             <!-- Visual Stage Area -->
-            <div class="w-full bg-white dark:bg-slate-800/50 rounded-xl border border-primary/10 relative flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden min-h-[160px]">
+            <div
+              class="w-full bg-white dark:bg-slate-800/50 rounded-xl border border-primary/10 relative flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden min-h-[160px]">
               <div id="clStageContainer" class="relative w-full h-24 mt-4 flex items-center justify-center">
                 <!-- Center point / track -->
                 <div class="absolute w-full h-px bg-slate-200 dark:bg-slate-700"></div>
 
                 <!-- Sphere 1 Rig -->
-                <div id="clSphere1Rig" class="absolute flex flex-col items-center gap-2 transform -translate-x-1/2 -translate-y-1/2 top-1/2" style="left: 25%;">
-                  <div id="clSphere1" class="size-14 rounded-full bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20 transition-all duration-300">
-                    q₁
+                <div id="clSphere1Rig"
+                  class="absolute flex flex-col items-center gap-2 transform -translate-x-1/2 -translate-y-1/2 top-1/2"
+                  style="left: 25%;">
+                  <div id="clSphere1"
+                    class="size-14 rounded-full bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20 transition-all duration-300">
+                    qÔéü
                   </div>
-                  <span id="clQ1Label" class="text-[10px] font-mono whitespace-nowrap">+5.0 µC</span>
+                  <span id="clQ1Label" class="text-[10px] font-mono whitespace-nowrap">+5.0 ┬ÁC</span>
                 </div>
 
                 <!-- Force Vector Arrows -->
                 <div id="clForceArrows" class="absolute flex gap-4 transition-all duration-300" style="width: 50%;">
                   <div class="w-full flex justify-between px-6">
-                    <span id="clForceArrowLeft" class="material-symbols-outlined text-primary scale-x-[-1] transition-transform duration-300">double_arrow</span>
-                    <span id="clForceArrowRight" class="material-symbols-outlined text-primary transition-transform duration-300">double_arrow</span>
+                    <span id="clForceArrowLeft"
+                      class="material-symbols-outlined text-primary scale-x-[-1] transition-transform duration-300">double_arrow</span>
+                    <span id="clForceArrowRight"
+                      class="material-symbols-outlined text-primary transition-transform duration-300">double_arrow</span>
                   </div>
                 </div>
 
                 <!-- Sphere 2 Rig -->
-                <div id="clSphere2Rig" class="absolute flex flex-col items-center gap-2 transform -translate-x-1/2 -translate-y-1/2 top-1/2" style="left: 75%;">
-                  <div id="clSphere2" class="size-14 rounded-full bg-slate-400 flex items-center justify-center text-white font-bold shadow-lg shadow-slate-400/20 transition-all duration-300">
-                    q₂
+                <div id="clSphere2Rig"
+                  class="absolute flex flex-col items-center gap-2 transform -translate-x-1/2 -translate-y-1/2 top-1/2"
+                  style="left: 75%;">
+                  <div id="clSphere2"
+                    class="size-14 rounded-full bg-slate-400 flex items-center justify-center text-white font-bold shadow-lg shadow-slate-400/20 transition-all duration-300">
+                    qÔéé
                   </div>
-                  <span id="clQ2Label" class="text-[10px] font-mono whitespace-nowrap">-5.0 µC</span>
+                  <span id="clQ2Label" class="text-[10px] font-mono whitespace-nowrap">-5.0 ┬ÁC</span>
                 </div>
               </div>
-              <div id="clForceType" class="absolute bottom-4 text-xs font-medium text-slate-400 uppercase tracking-widest" data-i18n="force.attractive">Elektrostatik Çekme</div>
+              <div id="clForceType"
+                class="absolute bottom-4 text-xs font-medium text-slate-400 uppercase tracking-widest"
+                data-i18n="force.attractive">Elektrostatik ├çekme</div>
             </div>
 
             <!-- Input Form -->
@@ -279,56 +293,92 @@
                 <!-- q1 -->
                 <div class="flex flex-col gap-2">
                   <div class="flex justify-between items-center">
-                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300" data-i18n="exp.coulomb_law.q1">Yük q₁ (µC)</label>
-                    <span id="clValQ1" class="text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">5.0</span>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                      data-i18n="exp.coulomb_law.q1">Y├╝k qÔéü (┬ÁC)</label>
+                    <span id="clValQ1"
+                      class="text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">5.0</span>
                   </div>
-                  <input id="clInputQ1" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" type="range" min="-10" max="10" step="0.5" value="5" />
-                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>-10</span><span>+10</span></div>
+                  <input id="clInputQ1"
+                    class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary"
+                    type="range" min="-10" max="10" step="0.5" value="5" />
+                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1">
+                    <span>-10</span><span>+10</span>
+                  </div>
                 </div>
                 <!-- q2 -->
                 <div class="flex flex-col gap-2">
                   <div class="flex justify-between items-center">
-                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300" data-i18n="exp.coulomb_law.q2">Yük q₂ (µC)</label>
-                    <span id="clValQ2" class="text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">-5.0</span>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                      data-i18n="exp.coulomb_law.q2">Y├╝k qÔéé (┬ÁC)</label>
+                    <span id="clValQ2"
+                      class="text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">-5.0</span>
                   </div>
-                  <input id="clInputQ2" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" type="range" min="-10" max="10" step="0.5" value="-5" />
-                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>-10</span><span>+10</span></div>
+                  <input id="clInputQ2"
+                    class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary"
+                    type="range" min="-10" max="10" step="0.5" value="-5" />
+                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1">
+                    <span>-10</span><span>+10</span>
+                  </div>
                 </div>
                 <!-- mass1 -->
                 <div class="flex flex-col gap-2">
                   <div class="flex justify-between items-center">
-                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300" data-i18n="exp.coulomb_law.mass1">Kütle m₁ (g)</label>
-                    <span id="clValM1" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">10</span>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                      data-i18n="exp.coulomb_law.mass1">K├╝tle mÔéü (g)</label>
+                    <span id="clValM1"
+                      class="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">10</span>
                   </div>
-                  <input id="clInputM1" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-slate-600 dark:accent-slate-400" type="range" min="1" max="100" step="1" value="10" />
-                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>1</span><span>100</span></div>
+                  <input id="clInputM1"
+                    class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-slate-600 dark:accent-slate-400"
+                    type="range" min="1" max="100" step="1" value="10" />
+                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1">
+                    <span>1</span><span>100</span>
+                  </div>
                 </div>
                 <!-- mass2 -->
                 <div class="flex flex-col gap-2">
                   <div class="flex justify-between items-center">
-                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300" data-i18n="exp.coulomb_law.mass2">Kütle m₂ (g)</label>
-                    <span id="clValM2" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">10</span>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                      data-i18n="exp.coulomb_law.mass2">K├╝tle mÔéé (g)</label>
+                    <span id="clValM2"
+                      class="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">10</span>
                   </div>
-                  <input id="clInputM2" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-slate-600 dark:accent-slate-400" type="range" min="1" max="100" step="1" value="10" />
-                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>1</span><span>100</span></div>
+                  <input id="clInputM2"
+                    class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-slate-600 dark:accent-slate-400"
+                    type="range" min="1" max="100" step="1" value="10" />
+                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1">
+                    <span>1</span><span>100</span>
+                  </div>
                 </div>
                 <!-- dist -->
                 <div class="flex flex-col gap-2">
                   <div class="flex justify-between items-center">
-                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300" data-i18n="exp.coulomb_law.distance">Mesafe r (cm)</label>
-                    <span id="clValR" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded">50</span>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                      data-i18n="exp.coulomb_law.distance">Mesafe r (cm)</label>
+                    <span id="clValR"
+                      class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded">50</span>
                   </div>
-                  <input id="clInputR" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500" type="range" min="5" max="100" step="1" value="50" />
-                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>5</span><span>100</span></div>
+                  <input id="clInputR"
+                    class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    type="range" min="5" max="100" step="1" value="50" />
+                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1">
+                    <span>5</span><span>100</span>
+                  </div>
                 </div>
                 <!-- time -->
                 <div class="flex flex-col gap-2">
                   <div class="flex justify-between items-center">
-                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300" data-i18n="exp.coulomb_law.time">Zaman t (ms)</label>
-                    <span id="clValT" class="text-xs font-mono font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 py-0.5 rounded">10</span>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                      data-i18n="exp.coulomb_law.time">Zaman t (ms)</label>
+                    <span id="clValT"
+                      class="text-xs font-mono font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 py-0.5 rounded">10</span>
                   </div>
-                  <input id="clInputT" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500" type="range" min="1" max="100" step="1" value="10" />
-                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1"><span>1</span><span>100</span></div>
+                  <input id="clInputT"
+                    class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                    type="range" min="1" max="100" step="1" value="10" />
+                  <div class="flex justify-between text-[10px] text-slate-400 font-medium px-1">
+                    <span>1</span><span>100</span>
+                  </div>
                 </div>
               </div>
 
@@ -336,48 +386,64 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-primary/10">
                 <!-- HUD Panel -->
                 <div class="space-y-3">
-                  <h3 class="text-sm font-bold uppercase tracking-wider text-primary" data-i18n="exp.coulomb_law.hud">Sistem Verileri</h3>
+                  <h3 class="text-sm font-bold uppercase tracking-wider text-primary" data-i18n="exp.coulomb_law.hud">
+                    Sistem Verileri</h3>
                   <div class="grid grid-cols-2 gap-3">
                     <div class="bg-primary/5 dark:bg-primary/10 p-3 rounded-xl border border-primary/20">
-                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="exp.coulomb_law.elecForce">Kuvvet (F)</p>
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase"
+                        data-i18n="exp.coulomb_law.elecForce">Kuvvet (F)</p>
                       <p id="clForcePreview" class="text-sm font-bold text-primary font-mono">0.00 N</p>
                     </div>
                     <div class="bg-emerald-50 dark:bg-emerald-900/10 p-3 rounded-xl border border-emerald-200/30">
-                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="exp.coulomb_law.realDistance">Mesafe (r)</p>
-                      <p id="clHudDist" class="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono">50.0 cm</p>
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase"
+                        data-i18n="exp.coulomb_law.realDistance">Mesafe (r)</p>
+                      <p id="clHudDist" class="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono">50.0
+                        cm</p>
                     </div>
                     <div class="bg-sky-50 dark:bg-sky-900/10 p-3 rounded-xl border border-sky-200/30">
-                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="exp.coulomb_law.velocity1">Hız v₁</p>
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase"
+                        data-i18n="exp.coulomb_law.velocity1">H─▒z vÔéü</p>
                       <p id="clHudVel1" class="text-sm font-bold text-sky-600 dark:text-sky-400 font-mono">0.000 m/s</p>
                     </div>
                     <div class="bg-amber-50 dark:bg-amber-900/10 p-3 rounded-xl border border-amber-200/30">
-                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="exp.coulomb_law.velocity2">Hız v₂</p>
-                      <p id="clHudVel2" class="text-sm font-bold text-amber-600 dark:text-amber-400 font-mono">0.000 m/s</p>
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase"
+                        data-i18n="exp.coulomb_law.velocity2">H─▒z vÔéé</p>
+                      <p id="clHudVel2" class="text-sm font-bold text-amber-600 dark:text-amber-400 font-mono">0.000 m/s
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Conservation Panel -->
                 <div class="space-y-3">
-                  <h3 class="text-sm font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex justify-between items-center">
-                    <span data-i18n="exp.coulomb_law.conservationTitle">Yük Korunumu</span>
-                    <span id="clConservedBadge" class="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full tracking-normal" data-i18n="exp.coulomb_law.conserved">Korunuyor</span>
+                  <h3
+                    class="text-sm font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex justify-between items-center">
+                    <span data-i18n="exp.coulomb_law.conservationTitle">Y├╝k Korunumu</span>
+                    <span id="clConservedBadge"
+                      class="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full tracking-normal"
+                      data-i18n="exp.coulomb_law.conserved">Korunuyor</span>
                   </h3>
-                  <div class="bg-indigo-50 dark:bg-indigo-900/10 p-4 rounded-xl border border-indigo-200/50 flex flex-col justify-center h-[calc(100%-28px)]">
-                    <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-lg shadow-sm border border-slate-100 dark:border-white/5">
+                  <div
+                    class="bg-indigo-50 dark:bg-indigo-900/10 p-4 rounded-xl border border-indigo-200/50 flex flex-col justify-center h-[calc(100%-28px)]">
+                    <div
+                      class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-lg shadow-sm border border-slate-100 dark:border-white/5">
                       <div class="text-center">
-                        <p class="text-[10px] text-slate-400 font-bold">q₁</p>
-                        <p id="clConsQ1" class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">5.0 µC</p>
+                        <p class="text-[10px] text-slate-400 font-bold">qÔéü</p>
+                        <p id="clConsQ1" class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">5.0 ┬ÁC
+                        </p>
                       </div>
                       <span class="text-slate-300 font-bold text-lg">+</span>
                       <div class="text-center">
-                        <p class="text-[10px] text-slate-400 font-bold">q₂</p>
-                        <p id="clConsQ2" class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">-5.0 µC</p>
+                        <p class="text-[10px] text-slate-400 font-bold">qÔéé</p>
+                        <p id="clConsQ2" class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">-5.0 ┬ÁC
+                        </p>
                       </div>
                       <span class="text-slate-300 font-bold text-lg">=</span>
                       <div class="text-center">
-                        <p class="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold" data-i18n="exp.coulomb_law.totalQ">Toplam Yük</p>
-                        <p id="clConsTotal" class="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">0.0 µC</p>
+                        <p class="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold"
+                          data-i18n="exp.coulomb_law.totalQ">Toplam Y├╝k</p>
+                        <p id="clConsTotal" class="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">0.0
+                          ┬ÁC</p>
                       </div>
                     </div>
                   </div>
@@ -387,22 +453,31 @@
           </div>
 
           <!-- Bottom Navigation -->
-          <div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-primary/10 p-4 z-20">
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-primary/10 p-4 z-20">
             <div class="flex gap-4 max-w-4xl mx-auto w-full">
               <!-- Re-use the time input location as a HUD timer instead inside the nav panel so it's always visible -->
-              <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5 shadow-inner">
+              <div
+                class="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5 shadow-inner">
                 <span class="material-symbols-outlined text-slate-400 mr-2">timer</span>
-                <span id="clHudTime" class="font-mono text-lg font-bold text-slate-700 dark:text-slate-200">0.00 s</span>
+                <span id="clHudTime" class="font-mono text-lg font-bold text-slate-700 dark:text-slate-200">0.00
+                  s</span>
               </div>
-              
-              <button id="clSimResetBtn" class="flex-1 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2">
+
+              <button id="clSimResetBtn"
+                class="flex-1 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-sm">replay</span>
-                <span data-i18n="btn.reset">Sıfırla</span>
+                <span data-i18n="btn.reset">S─▒f─▒rla</span>
               </button>
-              <button id="clSimStartBtn" class="flex-[2] bg-primary text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/30 hover:brightness-110 transition-all flex items-center justify-center gap-2 relative overflow-hidden group">
-                <span id="clSimStartIcon" class="material-symbols-outlined text-lg relative z-10 transition-transform group-hover:scale-110">play_arrow</span>
-                <span id="clSimStartText" class="relative z-10" data-i18n="exp.coulomb_law.startSim">Simülasyonu Başlat</span>
-                <div class="absolute inset-0 bg-white/20 scale-x-0 origin-left transition-transform group-hover:scale-x-100"></div>
+              <button id="clSimStartBtn"
+                class="flex-[2] bg-primary text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/30 hover:brightness-110 transition-all flex items-center justify-center gap-2 relative overflow-hidden group">
+                <span id="clSimStartIcon"
+                  class="material-symbols-outlined text-lg relative z-10 transition-transform group-hover:scale-110">play_arrow</span>
+                <span id="clSimStartText" class="relative z-10" data-i18n="exp.coulomb_law.startSim">Sim├╝lasyonu
+                  Ba┼şlat</span>
+                <div
+                  class="absolute inset-0 bg-white/20 scale-x-0 origin-left transition-transform group-hover:scale-x-100">
+                </div>
               </button>
             </div>
           </div>
@@ -414,7 +489,7 @@
           <div class="flex items-center gap-2 mb-2">
             <span class="material-symbols-outlined text-xs text-slate-400">terminal</span>
             <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" data-i18n="log.title">Sistem
-              Günlüğü</h4>
+              G├╝nl├╝─ş├╝</h4>
           </div>
           <div id="logList" class="flex-1 overflow-y-auto font-mono text-xs space-y-1"></div>
         </div>
@@ -427,11 +502,11 @@
           <div>
             <h2 class="text-lg font-bold mb-3 flex items-center gap-2">
               <span class="material-symbols-outlined text-primary">school</span>
-              <span data-i18n="panel.learning">Öğrenme Paneli</span>
+              <span data-i18n="panel.learning">├û─şrenme Paneli</span>
             </h2>
             <div id="learningSummary" class="p-4 bg-primary/5 rounded-xl border border-primary/10">
               <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="learning.loading">
-                Yükleniyor…</p>
+                Y├╝kleniyorÔÇĞ</p>
             </div>
           </div>
 
@@ -442,7 +517,7 @@
           </div>
 
           <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="panel.liveReadouts">Canlı
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="panel.liveReadouts">Canl─▒
               Okumalar</h3>
             <div class="space-y-2">
               <div
@@ -452,15 +527,15 @@
               </div>
               <div
                 class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
-                <span class="text-xs font-medium text-slate-500" data-i18n="readout.glassCharge">Cam Yükü (Q1)</span>
-                <span id="q1Readout" class="text-sm font-mono font-bold text-sky-600 dark:text-sky-400">+0.0 µC</span>
+                <span class="text-xs font-medium text-slate-500" data-i18n="readout.glassCharge">Cam Y├╝k├╝ (Q1)</span>
+                <span id="q1Readout" class="text-sm font-mono font-bold text-sky-600 dark:text-sky-400">+0.0 ┬ÁC</span>
               </div>
               <div
                 class="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/10">
-                <span class="text-xs font-medium text-slate-500" data-i18n="readout.plasticCharge">Plastik Yükü
+                <span class="text-xs font-medium text-slate-500" data-i18n="readout.plasticCharge">Plastik Y├╝k├╝
                   (Q2)</span>
                 <span id="q2Readout" class="text-sm font-mono font-bold text-amber-700 dark:text-amber-500">0.0
-                  µC</span>
+                  ┬ÁC</span>
               </div>
             </div>
           </div>
@@ -468,15 +543,15 @@
           <div class="pt-4">
             <div class="p-4 rounded-xl bg-slate-900 text-white flex flex-col items-center text-center">
               <p class="text-[11px] font-bold opacity-60 uppercase mb-2" data-i18n="panel.mathExpression">Matematik
-                İfadesi</p>
-              <div class="font-serif italic text-lg tracking-widest">F = k · (|q₁|·|q₂|) / r²</div>
+                ─░fadesi</p>
+              <div class="font-serif italic text-lg tracking-widest">F = k ┬À (|qÔéü|┬À|qÔéé|) / r┬▓</div>
             </div>
           </div>
 
           <div class="pt-4 border-t border-slate-100 dark:border-white/5 space-y-3">
             <div class="flex items-center justify-between">
               <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="report.title">Rapor
-                Oluşturucu</h3>
+                Olu┼şturucu</h3>
               <div class="flex items-center gap-2">
                 <button id="exportExcelBtn"
                   class="text-xs font-bold px-3 py-1.5 rounded-full bg-green-600/10 text-green-700 hover:bg-green-600/20 transition-colors flex items-center gap-1">
@@ -492,29 +567,30 @@
             </div>
 
             <div class="space-y-2">
-              <label class="text-xs font-semibold text-slate-500" data-i18n="report.titleLabel">Rapor Başlığı</label>
+              <label class="text-xs font-semibold text-slate-500" data-i18n="report.titleLabel">Rapor
+                Ba┼şl─▒─ş─▒</label>
               <input id="reportTitleInput"
                 class="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm"
-                data-i18n-value="report.defaultTitle" value="İnteraktif Fizik Lab Raporu" />
+                data-i18n-value="report.defaultTitle" value="─░nteraktif Fizik Lab Raporu" />
             </div>
 
             <div class="space-y-2">
-              <label class="text-xs font-semibold text-slate-500" data-i18n="report.chooseExpression">İfade
-                Seçin</label>
+              <label class="text-xs font-semibold text-slate-500" data-i18n="report.chooseExpression">─░fade
+                Se├ğin</label>
               <select id="expressionSelect"
                 class="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm">
-                <option value="coulomb">Coulomb Yasası: F = k · (|q₁|·|q₂|) / r²</option>
+                <option value="coulomb">Coulomb Yasas─▒: F = k ┬À (|qÔéü|┬À|qÔéé|) / r┬▓</option>
               </select>
             </div>
 
             <button id="addToReportBtn"
               class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-primary text-white rounded-lg hover:brightness-95 transition-all text-sm font-bold">
               <span class="material-symbols-outlined text-base">note_add</span>
-              <span data-i18n="report.addCurrent">Mevcut değerleri rapora ekle</span>
+              <span data-i18n="report.addCurrent">Mevcut de─şerleri rapora ekle</span>
             </button>
 
             <div id="reportHint" class="text-[11px] text-slate-500 dark:text-slate-400" data-i18n-html="report.hint">
-              İpucu: Export sonrası dosyayı açıp tarayıcıdan <b>Print → Save as PDF</b> ile PDF alabilirsin.
+              ─░pucu: Export sonras─▒ dosyay─▒ a├ğ─▒p taray─▒c─▒dan <b>Print ÔåÆ Save as PDF</b> ile PDF alabilirsin.
             </div>
 
             <div id="reportItemsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>

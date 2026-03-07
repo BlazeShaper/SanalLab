@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html class="light" lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>{% block title %}İnteraktif Fizik Laboratuvarı{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <link href="/static/styles.css?v=5" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#ec5b13",
+            "background-light": "#f8f6f6",
+            "background-dark": "#221610",
+          },
+          fontFamily: { "display": ["Public Sans"] },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Public Sans', sans-serif;
+    }
+
+    .canvas-bg {
+      background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* Sim controls in sidebar */
+    .sim-ctrl-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: filter 0.15s, opacity 0.15s;
+    }
+    .sim-ctrl-btn:hover { filter: brightness(1.08); }
+    .sim-ctrl-btn:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
+
+    .sim-ctrl-btn.start  { background: #ec5b13; color: #fff; box-shadow: 0 4px 14px rgba(236,91,19,0.35); }
+    .sim-ctrl-btn.pause  { background: #0ea5e9; color: #fff; }
+    .sim-ctrl-btn.reset  { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
+    .dark .sim-ctrl-btn.reset { background: rgba(255,255,255,0.06); color: #e2e8f0; border-color: rgba(255,255,255,0.1); }
+
+    .slider-label { font-size: 12px; font-weight: 600; color: #334155; }
+    .dark .slider-label { color: #cbd5e1; }
+    .slider-val-badge {
+      font-size: 11px; font-family: monospace; font-weight: 700;
+      background: rgba(236,91,19,0.1); color: #ec5b13;
+      border-radius: 5px; padding: 1px 7px;
+    }
+  </style>
+  
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+  <div class="flex flex-col h-screen overflow-hidden">
+    <!-- Header -->
+    <header
+      class="flex items-center justify-between px-6 py-3 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-primary/20 shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary p-1.5 rounded-lg text-white">
+          <span class="material-symbols-outlined block">science</span>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <h1 class="text-xl font-bold tracking-tight" data-i18n="header.title">İnteraktif Fizik Laboratuvarı</h1>
+          <span id="activeExperimentName"
+            class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tracking-wide">{% block experiment_name %}{% endblock %}</span>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-6">
+        <div class="relative">
+          <button id="expMenuBtn"
+            class="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors">
+            <span data-i18n="header.experiments">Deneyler</span> <span
+              class="material-symbols-outlined text-sm">expand_more</span>
+          </button>
+          <div id="expMenuList"
+            class="hidden absolute top-full mt-2 right-0 w-72 bg-white dark:bg-background-dark border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
+            <div id="expMenuItems" class="p-2">
+              {% for exp in experiments %}
+              <a href="/experiments/{{ exp.id }}"
+                class="block w-full text-left px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors text-sm font-semibold {{ 'text-primary bg-primary/5' if exp_id == exp.id else '' }}" data-i18n="{{ exp.name }}">
+                {{ exp.name }}
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div id="statusChip"
+          class="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+          <span class="relative flex h-2 w-2">
+            <span id="statusPing"
+              class="hidden animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+          </span>
+          <span id="statusText" data-i18n="status.ready">Hazır</span>
+        </div>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <button id="langToggleBtn" onclick="toggleLang(); if(typeof onLangChanged==='function') onLangChanged();"
+          class="px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-colors flex items-center gap-1.5"
+          title="Dili Değiştir">
+          <span class="material-symbols-outlined text-sm">translate</span>
+          <span data-i18n="lang.toggle">EN</span>
+        </button>
+        <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors" title="Settings">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+        <div class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
+          <span class="text-primary font-bold text-xs">PI</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- Left Sidebar — Simulator Controls                          -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <aside
+        class="w-72 bg-white dark:bg-background-dark border-r border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
+        <div class="p-4 space-y-5">
+
+          <!-- Section: Simulator Controls -->
+          <div>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4"
+              data-i18n="sidebar.experimentControls">Deney Kontrolleri</h3>
+
+            <div class="space-y-4">
+              {% block sidebar_controls %}{% endblock %}
+            </div>
+          </div>
+
+          <!-- File Manager -->
+          <div class="border-t border-slate-100 dark:border-white/5 pt-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" data-i18n="sidebar.fileManager">
+              Dosya Yöneticisi</h3>
+            <div id="fileDropZone" class="file-drop-zone mb-3">
+              <span class="material-symbols-outlined text-slate-400 text-2xl mb-1 block">upload_file</span>
+              <span class="text-xs text-slate-500" data-i18n="file.dropHint">Dosya sürükle veya tıkla</span>
+              <input id="fileInput" type="file" class="hidden" />
+            </div>
+            <button id="uploadBtn"
+              class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all text-xs font-bold mb-3 disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled>
+              <span class="material-symbols-outlined text-sm">cloud_upload</span>
+              <span data-i18n="file.upload">Seçili Dosyayı Yükle</span>
+            </button>
+            <div id="fileList" class="space-y-2 max-h-48 overflow-y-auto"></div>
+          </div>
+
+          <div class="pt-2">
+            <div class="text-[10px] text-slate-400 leading-relaxed" data-i18n="sidebar.footer">
+              Tüm işlemler FastAPI backend ile gerçekleştirilir.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- Center — Simulation Stage                                  -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <main class="flex-1 flex flex-col bg-slate-50 dark:bg-background-dark/50 relative overflow-hidden">
+
+        {% block experiment_stage %}{% endblock %}
+
+        <!-- System Log -->
+        <div
+          class="h-28 bg-white dark:bg-background-dark border-t border-slate-200 dark:border-primary/20 p-3 overflow-hidden flex flex-col shrink-0">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-xs text-slate-400">terminal</span>
+            <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" data-i18n="log.title">Sistem
+              Günlüğü</h4>
+          </div>
+          <div id="logList" class="flex-1 overflow-y-auto font-mono text-xs space-y-1"></div>
+        </div>
+      </main>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- Right Panel — Learning & Reports                           -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <aside
+        class="w-80 bg-white dark:bg-background-dark border-l border-slate-200 dark:border-primary/20 flex flex-col shrink-0 overflow-y-auto">
+        <div class="p-6 space-y-8">
+          <div>
+            <h2 class="text-lg font-bold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">school</span>
+              <span data-i18n="panel.learning">Öğrenme Paneli</span>
+            </h2>
+            <div id="learningSummary" class="p-4 bg-primary/5 rounded-xl border border-primary/10">
+              <!-- Rendered via JS normally, but we can put block fallback -->
+              {% block learning_summary %}{% endblock %}
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="panel.coreConcepts">Temel
+              Kavramlar</h3>
+            <div id="coreConcepts" class="space-y-3">
+              {% block core_concepts %}{% endblock %}
+            </div>
+          </div>
+
+          <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="panel.liveReadouts">Canlı
+              Okumalar</h3>
+            <div class="space-y-2">
+              {% block live_readouts %}{% endblock %}
+            </div>
+          </div>
+
+          {% block math_expression %}{% endblock %}
+
+          <div class="pt-4 border-t border-slate-100 dark:border-white/5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="report.title">Rapor
+                Oluşturucu</h3>
+              <div class="flex items-center gap-2">
+                <button id="exportExcelBtn"
+                  class="text-xs font-bold px-3 py-1.5 rounded-full bg-green-600/10 text-green-700 hover:bg-green-600/20 transition-colors flex items-center gap-1">
+                  <span class="material-symbols-outlined text-sm">table_view</span>
+                  <span data-i18n="report.exportExcel">Excel</span>
+                </button>
+                <button id="exportReportBtn"
+                  class="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-1">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span data-i18n="report.exportHtml">HTML</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-xs font-semibold text-slate-500" data-i18n="report.titleLabel">Rapor Başlığı</label>
+              <input id="reportTitleInput"
+                class="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm"
+                data-i18n-value="report.defaultTitle" value="İnteraktif Fizik Lab Raporu" />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-xs font-semibold text-slate-500" data-i18n="report.chooseExpression">İfade
+                Seçin</label>
+              <select id="expressionSelect"
+                class="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm">
+                {% block report_expressions %}{% endblock %}
+              </select>
+            </div>
+
+            <button id="addToReportBtn"
+              class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-primary text-white rounded-lg hover:brightness-95 transition-all text-sm font-bold">
+              <span class="material-symbols-outlined text-base">note_add</span>
+              <span data-i18n="report.addCurrent">Mevcut değerleri rapora ekle</span>
+            </button>
+
+            <div id="reportHint" class="text-[11px] text-slate-500 dark:text-slate-400" data-i18n-html="report.hint">
+              İpucu: Export sonrası dosyayı açıp tarayıcıdan <b>Print → Save as PDF</b> ile PDF alabilirsin.
+            </div>
+
+            <div id="reportItemsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="/static/i18n.js?v=5"></script>
+  <script src="/static/js/shared.js?v=5"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

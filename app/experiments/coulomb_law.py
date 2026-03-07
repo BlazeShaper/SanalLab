@@ -37,56 +37,7 @@ class CoulombLawExperiment(BaseExperiment):
         }
 
     def controls_schema(self) -> list[dict[str, Any]]:
-        return [
-            {
-                "type": "number_input",
-                "id": "q1",
-                "label": "exp.coulomb_law.q1",
-                "field": "q1",
-                "placeholder": "1.6e-19",
-                "unit": " C",
-            },
-            {
-                "type": "number_input",
-                "id": "q2",
-                "label": "exp.coulomb_law.q2",
-                "field": "q2",
-                "placeholder": "-1.6e-19",
-                "unit": " C",
-            },
-            {
-                "type": "number_input",
-                "id": "mass1",
-                "label": "exp.coulomb_law.mass1",
-                "field": "mass1",
-                "placeholder": "9.11e-31",
-                "unit": " kg",
-            },
-            {
-                "type": "number_input",
-                "id": "mass2",
-                "label": "exp.coulomb_law.mass2",
-                "field": "mass2",
-                "placeholder": "9.11e-31",
-                "unit": " kg",
-            },
-            {
-                "type": "number_input",
-                "id": "distance",
-                "label": "exp.coulomb_law.distance",
-                "field": "distance",
-                "placeholder": "0.05",
-                "unit": " m",
-            },
-            {
-                "type": "number_input",
-                "id": "time",
-                "label": "exp.coulomb_law.time",
-                "field": "time",
-                "placeholder": "1.0",
-                "unit": " s",
-            },
-        ]
+        return []
 
     def compute(self, state: dict[str, Any]) -> dict[str, Any]:
         q1_micro = state.get("q1", 5.0)
