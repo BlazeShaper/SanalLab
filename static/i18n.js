@@ -118,6 +118,42 @@ const TRANSLATIONS = {
         "export.noItems": "Kaydedilmiş öğe yok.",
         "export.hint": 'PDF olarak dışa aktar: Tarayıcı Yazdır → "PDF olarak Kaydet".',
         "lang.toggle": "EN",
+
+        // Coulomb's Law experiment
+        "exp.coulomb_law.name": "Coulomb Yasası: Adım Adım",
+        "exp.coulomb_law.title": "Coulomb Yasası Deneyi",
+        "exp.coulomb_law.stepDesc": "Parametreleri girin",
+        "exp.coulomb_law.q1": "Yük q₁ (µC)",
+        "exp.coulomb_law.q2": "Yük q₂ (µC)",
+        "exp.coulomb_law.mass1": "Kütle m₁ (g)",
+        "exp.coulomb_law.mass2": "Kütle m₂ (g)",
+        "exp.coulomb_law.distance": "Mesafe r (cm)",
+        "exp.coulomb_law.time": "Zaman t (ms)",
+        "exp.coulomb_law.calcPreview": "Hesaplama Önizlemesi",
+        "exp.coulomb_law.elecForce": "Elektrostatik Kuvvet (F)",
+        "exp.coulomb_law.accel1": "İvme a₁",
+        "exp.coulomb_law.accel2": "İvme a₂",
+        "exp.coulomb_law.prev": "Önceki",
+        "exp.coulomb_law.calculate": "Sonuçları Hesapla",
+        "exp.coulomb_law.step1": "Adım 1: Yük değerlerini girin",
+        "exp.coulomb_law.step2": "Adım 2: Kütle değerlerini girin",
+        "exp.coulomb_law.step3": "Adım 3: Mesafe ve zamanı ayarlayın",
+        "exp.coulomb_law.step4": "Adım 4: Kuvveti hesaplayın",
+        "exp.coulomb_law.step5": "Adım 5: İvme ve hızı gözlemleyin",
+        "exp.coulomb_law.step6": "Adım 6: Sonuçları rapora ekleyin",
+        "exp.coulomb_law.stepChanged": "Adım değiştirildi.",
+        "exp.coulomb_law.calculated": "Sonuçlar hesaplandı.",
+
+        "learning.coulomb.summary": 'Coulomb Yasası, iki nokta yükü arasındaki '
+            + 'elektrostatik kuvveti tanımlar. '
+            + 'Kuvvet, yüklerin çarpımıyla doğru orantılı '
+            + 've aralarındaki mesafenin karesiyle ters orantılıdır.',
+        "learning.coulomb.concept1.title": "Coulomb Yasası",
+        "learning.coulomb.concept1.desc": "F = k · |q₁·q₂| / r²  formülü ile hesaplanır. k = 8.99×10⁹ N·m²/C².",
+        "learning.coulomb.concept2.title": "Çekme ve İtme",
+        "learning.coulomb.concept2.desc": "Zıt işaretli yükler birbirini çeker, aynı işaretli yükler birbirini iter.",
+        "learning.coulomb.concept3.title": "Newton'un İkinci Yasası",
+        "learning.coulomb.concept3.desc": "F = m·a ilişkisi ile kuvvetten ivme, hız ve yer değiştirme hesaplanır.",
     },
 
     // ──────────────────────── ENGLISH ───────────────────────
@@ -219,6 +255,41 @@ const TRANSLATIONS = {
         "export.noItems": "No items saved.",
         "export.hint": 'Export as PDF: Browser Print → "Save as PDF".',
         "lang.toggle": "TR",
+
+        // Coulomb's Law experiment
+        "exp.coulomb_law.name": "Coulomb's Law: Step by Step",
+        "exp.coulomb_law.title": "Coulomb's Law Experiment",
+        "exp.coulomb_law.stepDesc": "Input Parameters",
+        "exp.coulomb_law.q1": "Charge q₁ (µC)",
+        "exp.coulomb_law.q2": "Charge q₂ (µC)",
+        "exp.coulomb_law.mass1": "Mass m₁ (g)",
+        "exp.coulomb_law.mass2": "Mass m₂ (g)",
+        "exp.coulomb_law.distance": "Distance r (cm)",
+        "exp.coulomb_law.time": "Time t (ms)",
+        "exp.coulomb_law.calcPreview": "Calculation Preview",
+        "exp.coulomb_law.elecForce": "Electrostatic Force (F)",
+        "exp.coulomb_law.accel1": "Acceleration a₁",
+        "exp.coulomb_law.accel2": "Acceleration a₂",
+        "exp.coulomb_law.prev": "Previous",
+        "exp.coulomb_law.calculate": "Calculate Results",
+        "exp.coulomb_law.step1": "Step 1: Enter charge values",
+        "exp.coulomb_law.step2": "Step 2: Enter mass values",
+        "exp.coulomb_law.step3": "Step 3: Set distance and time",
+        "exp.coulomb_law.step4": "Step 4: Calculate the force",
+        "exp.coulomb_law.step5": "Step 5: Observe acceleration and velocity",
+        "exp.coulomb_law.step6": "Step 6: Add results to report",
+        "exp.coulomb_law.stepChanged": "Step changed.",
+        "exp.coulomb_law.calculated": "Results calculated.",
+
+        "learning.coulomb.summary": "Coulomb's Law describes the electrostatic force "
+            + "between two point charges. The force is directly proportional to "
+            + "the product of charges and inversely proportional to the square of their distance.",
+        "learning.coulomb.concept1.title": "Coulomb's Law",
+        "learning.coulomb.concept1.desc": "Calculated using F = k · |q₁·q₂| / r². k = 8.99×10⁹ N·m²/C².",
+        "learning.coulomb.concept2.title": "Attraction and Repulsion",
+        "learning.coulomb.concept2.desc": "Opposite charges attract, like charges repel each other.",
+        "learning.coulomb.concept3.title": "Newton's Second Law",
+        "learning.coulomb.concept3.desc": "Using F = m·a, we can derive acceleration, velocity and displacement from the force.",
     },
 };
 

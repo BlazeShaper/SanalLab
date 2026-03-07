@@ -11,6 +11,7 @@ from app.session import ensure_session, get_experiment_state, set_experiment_sta
 
 # Import experiments so they auto-register
 import app.experiments.electrostatics  # noqa: F401
+import app.experiments.coulomb_law     # noqa: F401
 from app.experiments.registry import REGISTRY, get_experiment
 
 router = APIRouter(prefix="/api/experiments", tags=["experiments"])
@@ -83,6 +84,7 @@ def experiment_action(exp_id: str, payload: ActionPayload, request: Request, res
     st = _ensure_exp_state(sid, exp_id)
 
     action = payload.action
+    params = payload.params or {}
     log_msg = ""
 
     if exp_id == "electrostatics":
@@ -92,6 +94,32 @@ def experiment_action(exp_id: str, payload: ActionPayload, request: Request, res
         elif action == "rubPlastic":
             st["plasticChargeMicroC"] = st.get("plasticChargeMicroC", 0.0) - 1.0
             log_msg = "exp.electrostatics.rubPlasticLog"
+        elif action == "pause":
+            st["running"] = False
+            log_msg = "log.simPaused"
+        elif action == "resume":
+            st["running"] = True
+            log_msg = "log.simResumed"
+        elif action == "togglePause":
+            st["running"] = not st.get("running", True)
+            log_msg = "log.simResumed" if st["running"] else "log.simPaused"
+        elif action == "reset":
+            st = exp.default_state()
+            log_msg = "log.simReset"
+
+    elif exp_id == "coulomb_law":
+        if action == "setStep":
+            step = int(params.get("step", 1))
+            st["currentStep"] = max(1, min(6, step))
+            log_msg = "exp.coulomb_law.stepChanged"
+        elif action == "nextStep":
+            st["currentStep"] = min(6, st.get("currentStep", 1) + 1)
+            log_msg = "exp.coulomb_law.stepChanged"
+        elif action == "prevStep":
+            st["currentStep"] = max(1, st.get("currentStep", 1) - 1)
+            log_msg = "exp.coulomb_law.stepChanged"
+        elif action == "calculate":
+            log_msg = "exp.coulomb_law.calculated"
         elif action == "pause":
             st["running"] = False
             log_msg = "log.simPaused"
