@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>İnteraktif Fizik Laboratuvarı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#ec5b13",
+                        backgroundDark: "#0B0C10",
+                        cardBg: "rgba(255, 255, 255, 0.05)",
+                    },
+                    fontFamily: {
+                        display: ["Public Sans", "sans-serif"],
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background-color: #0B0C10;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(236, 91, 19, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.15), transparent 25%);
+            color: #f8fafc;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-card.primary-hover:hover {
+            box-shadow: 0 20px 40px rgba(236, 91, 19, 0.2);
+            border-color: rgba(236, 91, 19, 0.4);
+        }
+        
+        .glass-card.secondary-hover:hover {
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
+            border-color: rgba(14, 165, 233, 0.4);
+        }
+
+        .glass-card .description-text {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .glass-card:hover .description-text {
+            max-height: 100px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full relative flex items-center justify-center bg-grid">
+
+    <!-- Ambient Orbs -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full mix-blend-screen filter blur-3xl opacity-50 animate-blob"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-sky-500/20 rounded-full mix-blend-screen filter blur-3xl opacity-50 animate-blob" style="animation-delay: 2s"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-screen filter blur-3xl opacity-50 animate-blob" style="animation-delay: 4s"></div>
+
+    <div class="relative z-10 w-full max-w-6xl mx-auto px-6 py-12 flex flex-col items-center">
+        <!-- Logo / Title -->
+        <div class="text-center mb-16 space-y-4">
+            <div class="inline-flex items-center justify-center p-4 bg-primary/10 rounded-2xl mb-4 border border-primary/20">
+                <span class="material-symbols-outlined text-primary text-5xl">science</span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow-lg">
+                İnteraktif Fizik <span class="text-primary">Laboratuvarı</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-400 font-medium max-w-2xl mx-auto mt-4">
+                Lütfen giriş yapmak istediğiniz ortamı seçin.
+            </p>
+        </div>
+
+        <!-- Cards Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+            
+            <!-- Sanal Lab Card -->
+            <a href="/sanal-lab" class="glass-card primary-hover rounded-3xl p-8 flex flex-col items-center text-center group cursor-pointer relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-50">
+                    <span class="material-symbols-outlined text-4xl text-primary">biotech</span>
+                </div>
+                
+                <div class="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
+                    <span class="material-symbols-outlined text-4xl">experiment</span>
+                </div>
+                
+                <h2 class="text-3xl font-bold text-white mb-2">Sanal Lab</h2>
+                <div class="h-1 w-12 bg-primary/50 rounded-full mb-2 group-hover:w-24 group-hover:bg-primary transition-all duration-300"></div>
+                
+                <p class="description-text text-slate-300 font-medium leading-relaxed">
+                    Daha çok <span class="text-primary font-bold">deney amaçlı</span> bir ortam. Fizik yasalarını test edin, ölçümler yapın ve gerçekçi laboratuvar deneyimini yaşayın.
+                </p>
+                
+                <div class="mt-auto pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+                    <span class="inline-flex items-center gap-2 text-primary font-semibold text-sm bg-primary/10 px-4 py-2 rounded-full border border-primary/20">
+                        Oturuma Katıl <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </span>
+                </div>
+            </a>
+
+            <!-- Simülasyon Labı Card -->
+            <a href="/experiments/electrostatics" class="glass-card secondary-hover rounded-3xl p-8 flex flex-col items-center text-center group cursor-pointer relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-50">
+                    <span class="material-symbols-outlined text-4xl text-sky-400">toys_and_games</span>
+                </div>
+                
+                <div class="w-20 h-20 rounded-full bg-sky-500/10 border border-sky-500/20 flex items-center justify-center mb-6 text-sky-400 group-hover:scale-110 group-hover:bg-sky-500/20 transition-all duration-300">
+                    <span class="material-symbols-outlined text-4xl">animation</span>
+                </div>
+                
+                <h2 class="text-3xl font-bold text-white mb-2">Simülasyon Labı</h2>
+                <div class="h-1 w-12 bg-sky-500/50 rounded-full mb-2 group-hover:w-24 group-hover:bg-sky-400 transition-all duration-300"></div>
+                
+                <p class="description-text text-slate-300 font-medium leading-relaxed">
+                    Daha çok <span class="text-sky-400 font-bold">eğlence amaçlı</span> bir ortam. Fizik kurallarıyla oynayın, etkileşimli nesnelerle eğlenerek öğrenin ve keşfedin.
+                </p>
+
+                <div class="mt-auto pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+                    <span class="inline-flex items-center gap-2 text-sky-400 font-semibold text-sm bg-sky-400/10 px-4 py-2 rounded-full border border-sky-400/20">
+                        Oturuma Katıl <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </span>
+                </div>
+            </a>
+
+        </div>
+
+        <div class="mt-16 text-slate-500 text-sm font-medium">
+            &copy; 2026 İnteraktif Fizik Laboratuvarı. Tüm Hakları Saklıdır.
+        </div>
+    </div>
+
+</body>
+</html>

@@ -126,11 +126,11 @@ class ElectrostaticsExperiment(BaseExperiment):
         if q1_c != 0 and q2_c != 0:
             angle_mag = min(2.0 + 3.0 * math.log10(1.0 + force), 25.0)
             if product < 0:
-                glass_target = angle_mag
-                plastic_target = -angle_mag
-            else:
                 glass_target = -angle_mag
                 plastic_target = angle_mag
+            else:
+                glass_target = angle_mag
+                plastic_target = -angle_mag
 
         return {
             "force": force,

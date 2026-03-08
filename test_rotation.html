@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container { display: flex; gap: 50px; padding: 50px; }
+        .rod { width: 20px; height: 100px; background: blue; transform-origin: top center; }
+        .rotated { transform: rotate(30deg); background: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <p>0deg</p>
+            <div class="rod"></div>
+        </div>
+        <div>
+            <p>+30deg</p>
+            <div class="rod rotated" id="testRod"></div>
+        </div>
+    </div>
+</body>
+</html>

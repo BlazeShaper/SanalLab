@@ -92,7 +92,7 @@ function readInputs() {
 }
 
 // ─── Physics Engine ───────────────────────────────────────────────────
-const SPHERE_DIAMETER = 0.04;
+const SPHERE_DIAMETER = 0.12; // Adjusted to match visual size
 
 function coulombForceMag(q1, q2, r) {
   if (r < 1e-4) r = 1e-4; // prevent singularity
@@ -102,7 +102,7 @@ function coulombForceMag(q1, q2, r) {
 function physicsStep(dt) {
   let r = Math.abs(sim.x2 - sim.x1);
 
-  if (r <= SPHERE_DIAMETER) {
+  if (r <= SPHERE_DIAMETER && !sim.collisionOccurred) {
     const mx = (sim.x1 + sim.x2) / 2;
     if (sim.x1 < sim.x2) {
       sim.x1 = mx - SPHERE_DIAMETER / 2;
@@ -113,16 +113,14 @@ function physicsStep(dt) {
     }
     r = SPHERE_DIAMETER;
 
-    const CR = 0.8;
-    const v1_new = ((sim.m1 - sim.m2) * sim.v1 + 2 * sim.m2 * sim.v2) / (sim.m1 + sim.m2);
-    const v2_new = ((sim.m2 - sim.m1) * sim.v2 + 2 * sim.m1 * sim.v1) / (sim.m1 + sim.m2);
-    sim.v1 = v1_new * CR;
-    sim.v2 = v2_new * CR;
+    // Stop on collision
+    sim.v1 = 0;
+    sim.v2 = 0;
+    sim.collisionOccurred = true;
 
     const totalQ = sim.q1 + sim.q2;
     sim.q1 = totalQ / 2;
     sim.q2 = totalQ / 2;
-
     sim.chargeTransferred = true;
   }
 
@@ -217,6 +215,7 @@ function simLoop(timestamp) {
   for (let i = 0; i < SUBSTEPS; i++) {
     const res = physicsStep(subDt);
     F = res.F; a1 = res.a1; a2 = res.a2;
+    if (sim.collisionOccurred) break;
   }
   
   if (sim.chargeTransferred) {
@@ -238,6 +237,14 @@ function simLoop(timestamp) {
     if (typeof addLog === "function") {
       addLog(`Fiziksel Çarpışma! Yükler paylaşıldı: q₁=q₂=${q1_uC.toFixed(2)} µC`, "primary");
     }
+    sim.chargeTransferred = false;
+  }
+
+  if (sim.collisionOccurred) {
+    sim.done = true;
+    renderFrame(F, a1, a2);
+    onSimComplete();
+    return;
   }
 
   sim.elapsed += dt;
@@ -336,8 +343,8 @@ function updateArrowVisibility(visible, inward) {
   if (simArrowLeft)  simArrowLeft.style.opacity  = visible ? "0.85" : "0";
   if (simArrowRight) simArrowRight.style.opacity = visible ? "0.85" : "0";
   if (visible) {
-    if (simArrowLeft)  simArrowLeft.textContent  = inward ? "arrow_back"    : "arrow_forward";
-    if (simArrowRight) simArrowRight.textContent = inward ? "arrow_forward" : "arrow_back";
+    if (simArrowLeft)  simArrowLeft.textContent  = inward ? "arrow_forward" : "arrow_back";
+    if (simArrowRight) simArrowRight.textContent = inward ? "arrow_back"    : "arrow_forward";
   }
 }
 
@@ -390,6 +397,7 @@ function startSim() {
   sim.active = true;
   sim.paused = false;
   sim.done   = false;
+  sim.collisionOccurred = false;
   sim.lastFrameTime = null;
 
   if (clStartBtn) clStartBtn.disabled = true;
@@ -426,7 +434,7 @@ function togglePause() {
 function resetSim() {
   if (sim.rafId) { cancelAnimationFrame(sim.rafId); sim.rafId = null; }
 
-  sim.active = false; sim.paused = false; sim.done = false;
+  sim.active = false; sim.paused = false; sim.done = false; sim.collisionOccurred = false;
   sim.x1 = 0; sim.x2 = 0; sim.v1 = 0; sim.v2 = 0; sim.elapsed = 0;
 
   if (clStartBtn) clStartBtn.disabled = false;

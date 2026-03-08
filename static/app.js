@@ -218,8 +218,8 @@ function coulombForceMag(q1, q2, r) {
 function physicsStep(dt) {
   let r = Math.abs(sim.x2 - sim.x1);
 
-  // Çarpışma ve Yük Paylaşımı (Gerçekçi Dokunma Fiziği)
-  if (r <= SPHERE_DIAMETER) {
+  // Çarpışma ve Yük Paylaşımı
+  if (r <= SPHERE_DIAMETER && !sim.collisionOccurred) {
     // Penetration (iç içe geçme) çözümü
     const mx = (sim.x1 + sim.x2) / 2;
     if (sim.x1 < sim.x2) {
@@ -359,6 +359,7 @@ function simLoop(timestamp) {
   for (let i = 0; i < SUBSTEPS; i++) {
     const res = physicsStep(subDt);
     F = res.F; a1 = res.a1; a2 = res.a2;
+    if (sim.collisionOccurred) break;
   }
   
   if (sim.chargeTransferred) {
@@ -380,6 +381,14 @@ function simLoop(timestamp) {
     updateArrowVisibility(true, false);
     
     addLog(`Fiziksel Çarpışma! Yükler paylaşıldı: q₁=q₂=${q1_uC.toFixed(2)} µC`, "primary");
+    sim.chargeTransferred = false; // Only trigger once
+  }
+
+  if (sim.collisionOccurred) {
+    sim.done = true;
+    renderFrame(F, a1, a2);
+    onSimComplete();
+    return;
   }
 
   sim.elapsed += dt;
@@ -475,10 +484,10 @@ function updateArrowVisibility(visible, inward) {
   simArrowLeft.style.opacity  = visible ? "0.85" : "0";
   simArrowRight.style.opacity = visible ? "0.85" : "0";
   if (visible) {
-    // inward attraction: ← on left, → on right  (default arrow_back / arrow_forward)
-    // outward repulsion: → on left, ← on right
-    simArrowLeft.textContent  = inward ? "arrow_back"    : "arrow_forward";
-    simArrowRight.textContent = inward ? "arrow_forward" : "arrow_back";
+    // inward attraction: → on left, ← on right  (arrow_forward / arrow_back)
+    // outward repulsion: ← on left, → on right
+    simArrowLeft.textContent  = inward ? "arrow_forward" : "arrow_back";
+    simArrowRight.textContent = inward ? "arrow_back"    : "arrow_forward";
   }
 }
 
@@ -537,6 +546,7 @@ function startSim() {
   sim.active = true;
   sim.paused = false;
   sim.done   = false;
+  sim.collisionOccurred = false;
   sim.lastFrameTime = null;
 
   // Update buttons
@@ -576,7 +586,7 @@ function resetSim() {
   // Stop loop
   if (sim.rafId) { cancelAnimationFrame(sim.rafId); sim.rafId = null; }
 
-  sim.active = false; sim.paused = false; sim.done = false;
+  sim.active = false; sim.paused = false; sim.done = false; sim.collisionOccurred = false;
   sim.x1 = 0; sim.x2 = 0; sim.v1 = 0; sim.v2 = 0; sim.elapsed = 0;
 
   // Restore button states
@@ -623,10 +633,13 @@ clResetBtn.addEventListener("click", resetSim);
     };
     const field = fieldMap[inp.id];
     const val   = parseFloat(inp.value);
-    if (field && !isNaN(val)) {
-      api("/api/experiments/coulomb_law/update", {
+    const expId = local.activeExpId;
+    if (expId && !isNaN(val)) {
+      api(`/api/experiments/${expId}/update`, {
         method: "POST",
         body: JSON.stringify({ field, value: val }),
+      }).then(data => {
+        if (data.computed) applyComputed(data.computed);
       }).catch(() => {});
     }
   });
@@ -659,6 +672,15 @@ function applyComputed(computed) {
   local.showForces  = computed.showForces  ?? false;
   $$(".charge-symbol").forEach(el => { el.style.display = local.showCharges ? "" : "none"; });
   if (forceGroup) forceGroup.style.display = local.showForces ? "flex" : "none";
+
+  // Dynamic arrowheads for electrostatics
+  const arrowL = $("#forceArrowLeft");
+  const arrowR = $("#forceArrowRight");
+  if (arrowL && arrowR) {
+    const isAttr = computed.forceLabel === "force.attractive";
+    arrowL.style.transform = isAttr ? "rotate(225deg)" : "rotate(45deg)";
+    arrowR.style.transform = isAttr ? "rotate(315deg)" : "rotate(135deg)";
+  }
 }
 
 // ─── Learning panel ───────────────────────────────────────────────────

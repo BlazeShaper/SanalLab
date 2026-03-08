@@ -58,6 +58,15 @@ function applyComputed(computed) {
 
   $$(".charge-symbol").forEach(el => { el.style.display = local.showCharges ? "" : "none"; });
   if (forceGroup) forceGroup.style.display = local.showForces ? "flex" : "none";
+
+  // Dynamic arrowheads for electrostatics
+  const arrowL = $("#forceArrowLeft");
+  const arrowR = $("#forceArrowRight");
+  if (arrowL && arrowR) {
+    const isAttr = computed.forceLabel === "force.attractive";
+    arrowL.style.transform = isAttr ? "rotate(225deg)" : "rotate(45deg)";
+    arrowR.style.transform = isAttr ? "rotate(315deg)" : "rotate(135deg)";
+  }
 }
 
 // ─── Status ──────────────────────────────────────────────────────────

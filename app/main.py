@@ -35,8 +35,10 @@ def on_startup():
     init_db()
 
 @app.get("/")
-async def index():
-    return RedirectResponse(url="/experiments/electrostatics")
+async def index(request: Request):
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+    })
 
 @app.get("/experiments/{exp_id}")
 async def experiment_page(exp_id: str, request: Request):
@@ -56,3 +58,117 @@ async def experiment_page(exp_id: str, request: Request):
         "exp_name": exp_name,
         "experiments": experiments_list
     })
+
+# --- Sanal Lab Routes ---
+@app.get("/sanal-lab")
+async def sanal_lab_index():
+    # Redirect to the first available experiment
+    first_exp = next(iter(REGISTRY.values()), None)
+    if first_exp:
+        return RedirectResponse(url=f"/sanal-lab/{first_exp.id}")
+    return {"error": "No experiments found"}
+
+@app.get("/sanal-lab/{exp_id}")
+async def sanal_lab_page(exp_id: str, request: Request):
+    exp = get_experiment(exp_id)
+    if exp is None:
+        return {"error": "not_found"}
+    
+    experiments_list = [{"id": e.id, "name": e.name} for e in REGISTRY.values()]
+    
+    return templates.TemplateResponse("sanal_lab_exp.html", {
+        "request": request,
+        "exp_id": exp.id,
+        "exp_name": exp.name,
+        "learning": exp.learning_content(),
+        "experiments": experiments_list
+    })
+
+from fastapi.responses import FileResponse
+import tempfile
+
+@app.get("/api/download-sanal-lab/{exp_id}")
+async def download_sanal_lab_doc(exp_id: str, format: str = "txt"):
+    exp = get_experiment(exp_id)
+    if not exp:
+         return {"error": "not_found"}
+    
+    learning = exp.learning_content()
+    summary = learning.get("summary", "Bu deneyin temel amacı, belirlenen fizik prensiplerini incelemektir.")
+    concepts = learning.get("concepts", [])
+
+    if format == "excel":
+        import csv
+        fd, path = tempfile.mkstemp(suffix=".csv")
+        # Use utf-8-sig to ensure Excel opens the CSV correctly with Turkish characters
+        with os.fdopen(fd, 'w', encoding='utf-8-sig', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["Deney Adı", exp.name])
+            writer.writerow([])
+            writer.writerow(["Amacı", summary])
+            writer.writerow([])
+            if concepts:
+                writer.writerow(["No", "Kavram", "Açıklama"])
+                for c in concepts:
+                    writer.writerow([c.get('num', ''), c.get('title', ''), c.get('desc', '')])
+        return FileResponse(path=path, filename=f"{exp.id}_rapor.csv", media_type="text/csv")
+
+    elif format in ["html", "pdf"]:
+        html_content = f"""<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>{exp.name} - Rapor</title>
+<style>
+  body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; line-height: 1.6; color: #333; max-width: 800px; margin: auto; }}
+  h1 {{ color: #0ea5e9; border-bottom: 2px solid #eee; padding-bottom: 10px; }}
+  h2 {{ color: #555; margin-top: 30px; }}
+  .concept {{ background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0ea5e9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }}
+  .concept h3 {{ margin-top: 0; color: #0ea5e9; margin-bottom: 5px; }}
+  .concept p {{ margin-bottom: 0; color: #475569; }}
+</style>
+</head>
+<body>
+    <h1>{exp.name} - Deney Raporu</h1>
+    <h2>Deneyin Amacı</h2>
+    <p>{summary}</p>
+    <h2>Temel Kavramlar</h2>
+"""
+        for c in concepts:
+            html_content += f"""
+    <div class="concept">
+        <h3>[{c.get('num', '')}] {c.get('title', '')}</h3>
+        <p>{c.get('desc', '')}</p>
+    </div>"""
+        
+        html_content += "</body></html>"
+        
+        if format == "pdf":
+            html_content = html_content.replace("</body>", "<script>window.onload=function(){window.print();}</script></body>")
+
+        fd, path = tempfile.mkstemp(suffix=".html")
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        # If it's HTML downloading, we might want it to be an attachment. Wait, FileResponse defaults to attachment if we set filename.
+        # For PDF(Print) we can let the browser open it. By omitting filename or sending inline content disposition, but FileResponse handles it.
+        # A simpler way is to just let FileResponse serve it.
+        return FileResponse(path=path, filename=f"{exp.id}_rapor.html", media_type="text/html")
+        
+    else:
+        # Default text format
+        content = f"--- Deney Raporu ve Kuramsal Bilgiler ---\n\n"
+        content += f"Deney Adı: {exp.name}\n"
+        content += "=========================================\n\n"
+        content += f"Amacı:\n{summary}\n\n"
+        if concepts:
+            content += "Temel Kavramlar:\n"
+            for c in concepts:
+                content += f" - [{c.get('num', '')}] {c.get('title', '')}: {c.get('desc', '')}\n"
+        content += "\nNotlar:\nSimülasyon yerine bu ortam kuramsal raporlama ve masaüstü dökümantasyonu içindir.\n"
+
+        fd, path = tempfile.mkstemp(suffix=".txt")
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            f.write(content)
+            
+        return FileResponse(path=path, filename=f"{exp.id}_rapor.txt", media_type="text/plain")
