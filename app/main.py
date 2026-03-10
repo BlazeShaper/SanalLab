@@ -4,12 +4,17 @@ Interactive Physics Lab — FastAPI application entry point.
 from __future__ import annotations
 
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.db import init_db
 from app.routers import experiments, reports, files
+from app.auth.external_auth import ExternalAPIClient
+from app.auth.jwt_handler import create_access_token, verify_token
+
+# Initialize external API client
+external_client = ExternalAPIClient()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -60,16 +65,67 @@ async def experiment_page(exp_id: str, request: Request):
     })
 
 # --- Sanal Lab Routes ---
+@app.get("/sanal-lab-login")
+async def sanal_lab_login_page(request: Request, error: str | None = None):
+    return templates.TemplateResponse("login.html", {
+        "request": request,
+        "error": error
+    })
+
+@app.post("/sanal-lab-login")
+async def sanal_lab_login_post(request: Request, username: str = Form(...), password: str = Form(...)):
+    # 1. Dış kurum API'sine (Mock Modu üzerinden) güvenli HTTPS bağlantısı yap
+    user_data = external_client.authenticate_user(username, password)
+    
+    if user_data:
+        # Başarılı giriş: Sıfır-Bilgi yaklaşımıyla şifreyi yok sayıp sadece Yetki Jetonu oluştur.
+        access_token = create_access_token(data={"sub": username, "role": user_data.get("role", "student")})
+        
+        response = RedirectResponse(url="/sanal-lab", status_code=303)
+        
+        # Secure ve HttpOnly Cookie ayarı ile XSS saldırılarına karşı token çalınmasını engelliyoruz
+        response.set_cookie(
+            key="sanal_lab_auth", 
+            value=access_token, 
+            httponly=True, 
+            secure=True,     # Prod ortamlarında sadece HTTPS üzerinden iletilmeli.
+            samesite="lax",  # CSRF saldırılarına karşı koruma
+            max_age=86400    # 1 günlük yetkilendirme (24 saat)
+        )
+        return response
+    else:
+        # 2. Hatalı Şifre / Login Başarısız
+        return templates.TemplateResponse("login.html", {
+            "request": request,
+            "error": "Kimlik bilgileri kurum sistemlerimizle eşleşmedi!"
+        })
+
+def require_auth(request: Request) -> bool:
+    """Helper method to check auth cookie."""
+    token = request.cookies.get("sanal_lab_auth")
+    if not token:
+        return False
+    
+    payload = verify_token(token)
+    return payload is not None
+
 @app.get("/sanal-lab")
-async def sanal_lab_index():
+async def sanal_lab_index(request: Request):
+    if not require_auth(request):
+        return RedirectResponse(url="/sanal-lab-login", status_code=303)
+
     # Redirect to the first available experiment
-    first_exp = next(iter(REGISTRY.values()), None)
-    if first_exp:
+    try:
+        first_exp = next(iter(REGISTRY.values()))
         return RedirectResponse(url=f"/sanal-lab/{first_exp.id}")
-    return {"error": "No experiments found"}
+    except StopIteration:
+        return {"error": "No experiments found"}
 
 @app.get("/sanal-lab/{exp_id}")
 async def sanal_lab_page(exp_id: str, request: Request):
+    if not require_auth(request):
+        return RedirectResponse(url="/sanal-lab-login", status_code=303)
+
     exp = get_experiment(exp_id)
     if exp is None:
         return {"error": "not_found"}

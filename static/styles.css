@@ -11,16 +11,16 @@
 }
 .file-drop-zone:hover,
 .file-drop-zone.dragover {
-  border-color: #ec5b13;
-  background-color: rgba(236, 91, 19, 0.04);
+  border-color: #52525b;
+  background-color: rgba(82, 82, 91, 0.04);
 }
 .dark .file-drop-zone {
   border-color: rgba(255,255,255,0.1);
 }
 .dark .file-drop-zone:hover,
 .dark .file-drop-zone.dragover {
-  border-color: #ec5b13;
-  background-color: rgba(236, 91, 19, 0.08);
+  border-color: #a1a1aa;
+  background-color: rgba(161, 161, 170, 0.08);
 }
 
 /* Subtle fade-in animation for dynamically loaded content */

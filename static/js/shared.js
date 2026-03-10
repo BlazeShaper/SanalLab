@@ -185,15 +185,16 @@ if (reportItemsList) {
 let selectedFile = null;
 
 if (fileDropZone) {
-  fileDropZone.addEventListener("click",     () => fileInput.click());
+  fileDropZone.addEventListener("click",     () => { if (fileInput) fileInput.click(); });
   fileDropZone.addEventListener("dragover",  e => { e.preventDefault(); fileDropZone.classList.add("dragover"); });
   fileDropZone.addEventListener("dragleave", () => fileDropZone.classList.remove("dragover"));
   fileDropZone.addEventListener("drop", e => {
     e.preventDefault(); fileDropZone.classList.remove("dragover");
     if (e.dataTransfer.files.length) {
       selectedFile = e.dataTransfer.files[0];
-      uploadBtn.disabled = false;
-      fileDropZone.querySelector("span:last-child").textContent = selectedFile.name;
+      if (uploadBtn) uploadBtn.disabled = false;
+      const span = fileDropZone.querySelector("span:last-child");
+      if (span) span.textContent = selectedFile.name;
     }
   });
 }
@@ -202,8 +203,11 @@ if (fileInput) {
   fileInput.addEventListener("change", () => {
     if (fileInput.files.length) {
       selectedFile = fileInput.files[0];
-      uploadBtn.disabled = false;
-      fileDropZone.querySelector("span:last-child").textContent = selectedFile.name;
+      if (uploadBtn) uploadBtn.disabled = false;
+      if (fileDropZone) {
+          const span = fileDropZone.querySelector("span:last-child");
+          if (span) span.textContent = selectedFile.name;
+      }
     }
   });
 }
@@ -220,8 +224,12 @@ if (uploadBtn) {
     } else {
       addLog((t("file.uploaded") !== "file.uploaded" ? t("file.uploaded") : "Yüklendi: ") + (result.original_name || selectedFile.name), "primary");
     }
-    selectedFile = null; fileInput.value = "";
-    fileDropZone.querySelector("span:last-child").textContent = t("file.dropHint") !== "file.dropHint" ? t("file.dropHint") : "Dosya sürükle veya tıkla";
+    selectedFile = null; 
+    if (fileInput) fileInput.value = "";
+    if (fileDropZone) {
+        const span = fileDropZone.querySelector("span:last-child");
+        if (span) span.textContent = t("file.dropHint") !== "file.dropHint" ? t("file.dropHint") : "Dosya sürükle veya tıkla";
+    }
     loadFiles();
   });
 }
