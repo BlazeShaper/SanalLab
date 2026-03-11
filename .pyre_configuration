@@ -1,6 +1,6 @@
 {
   "source_directories": [
-    "c:/Users/ugrys/Desktop/SanalLab"
+    "app"
   ],
   "search_path": [
     "c:/Users/ugrys/Desktop/SanalLab/.venv/Lib/site-packages"

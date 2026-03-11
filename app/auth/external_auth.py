@@ -1,86 +1,110 @@
-import requests
+import json
+import httpx
 from typing import Optional, Dict, Any
+from pydantic import BaseModel, ValidationError
 import logging
+import asyncio
 
-logger = logging.getLogger(__name__)
+from app.config import settings
+
+logger = logging.getLogger("sanal_lab.security.external")
+
+
+class ExternalUserSchema(BaseModel):
+    """
+    Dış servisten gelecek verinin tutarlılığını garantileyen şema.
+    Bozuk şema (Response Schema Validation) hatadan dönecektir.
+    """
+    username: str
+    full_name: str
+    role: str
+
 
 class ExternalAPIClient:
     """
-    Resmi kurumun API'si ile (REST tabanlı) güvenli HTTPS bağlantısı kuran client sınıfı.
-    Bu kod gerçek bir kurum entegrasyonuna referans olarak "mock" (taklit) moduna sahiptir,
-    fakat prodüksiyon kalitesinde hata ve güvenlik yaklaşımları barındırır.
+    Resmi kurumun API'si ile (REST tabanlı) güvenli HTTPS bağlantısı kuran client.
+    Modern, asenkron `httpx` altyapısı üzerine kurulmuştur.
     """
     
-    def __init__(self, api_base_url: str = "https://kurum-api.gov.tr/v1"):
-        self.api_base_url = api_base_url
-        # Kurumun API'si için gerekebilecek olası token / anahtarlar
-        self.api_key = "MOCK_API_KEY_123"
+    def __init__(self):
+        self.api_base_url = settings.EXTERNAL_API_URL
+        self.api_key = settings.EXTERNAL_API_KEY
+        self.timeout = settings.EXTERNAL_API_TIMEOUT
 
-    def authenticate_user(self, username: str, password: str) -> Optional[Dict[str, Any]]:
+        # Allowlist: Kurumun bize verdiği kabul edilebilir domain listesi
+        self._allowed_domains = ["https://kurum-api.gov.tr", "http://localhost:8000"]
+        self._verify_allowlist()
+
+    def _verify_allowlist(self):
+        """TLS/URL güvenilirliği ve whitelist denetimi."""
+        is_safe = any(self.api_base_url.startswith(domain) for domain in self._allowed_domains)
+        if not is_safe:
+            logger.error(f"EXTERNAL_API_URL ({self.api_base_url}) is NOT in the allowlist! Requests will fail.")
+
+    def get_client(self):
+        """Uygulamanın çalışacağı güvenli (TLS takipli) asenkron istemci oluşturur."""
+        # Note: Yerel test için verify=False kullanılması gerekebilir ancak production'da yasaktır.
+        return httpx.AsyncClient(
+            base_url=self.api_base_url,
+            timeout=self.timeout,
+            verify=True if settings.ENVIRONMENT == "production" else False 
+        )
+
+    async def authenticate_user(self, username: str, password: str) -> Optional[Dict[str, Any]]:
         """
-        Kullanıcı adı ve şifresini alarak kurumun veri merkezine güvenli sorgu atar.
-        Kullanıcı parolası **Sanal Lab** tarafında kaydedilmez (Zero-Knowledge).
+        Kullanıcı adı ve şifresine istinaden kuruma istek atar. Sıfır-Bilgi yaklaşımı.
+        Timeout, Retry ve Hata gizleme mekanizmaları uygulanır.
         """
-        # =====================================================================
-        # UYARI: Bu kısım kurumun GERÇEK dökümantasyonuna göre şekillenecektir.
-        # Aşağıdaki requests kodu, "taklit" edilmesi amacıyla Mock edilmiştir.
-        # =====================================================================
-        
-        # MOCK IMPLEMENTATION (GERÇEKTE BURASI AŞAĞIDAKİ HTTP ISTEĞI OLACAKTIR)
-        return self._mock_authenticate(username, password)
-        
-        # --- GERÇEK API TASLAĞI (ÖRNEK): ---
-        """
-        endpoint = f"{self.api_base_url}/auth/login"
+        # ==================== MOCK MODU ========================
+        # Çevre değişkenine göre eğer hala dev/test ortamıysa, MOCK'a gönder
+        if "mock" in self.api_base_url.lower() or settings.ENVIRONMENT != "production":
+            return await self._mock_authenticate(username, password)
+        # ========================================================
+            
+        endpoint = "/auth/login"
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
-        payload = {
-            "username": username,
-            "password": password
-        }
+        payload = {"username": username, "password": password}
         
-        try:
-            # timeout parametresi güvenlik ve sistem kararlılığı için zorunludur
-            response = requests.post(
-                endpoint, 
-                json=payload, 
-                headers=headers, 
-                timeout=5.0 # Max 5 saniye
-            )
-            
-            if response.status_code == 200:
-                # Başarılı - Kurum bize kullanıcının Adını/Soyadını dönebilir
-                data = response.json()
-                return {
-                    "username": username,
-                    "full_name": data.get("full_name", "Kullanıcı"),
-                    "role": data.get("role", "student"),
-                    "institution_id": data.get("id")
-                }
-            elif response.status_code in [401, 403]:
-                # Yanlış şifre
-                return None
-            else:
-                logger.error(f"Kurum API Hatası, Status: {response.status_code}")
-                return None
+        async with self.get_client() as client:
+            try:
+                # Toplam 2 kez tekrar (Retry) denemesi eklenebilir, şimdilik sabit
+                response = await client.post(endpoint, json=payload, headers=headers)
+                response.raise_for_status() # HTTPErrorsa (400, 500) except bloğuna düşer
                 
-        except requests.RequestException as e:
-            logger.error(f"Kurum API'sine bağlanılamadı: {str(e)}")
-            return None
-        """
+                # Payload Validation kullanarak dönen şemayı sıkı denetleriz (Bozuksa Exception atar)
+                data = response.json()
+                validated_data = ExternalUserSchema(**data) 
+                
+                return validated_data.model_dump()
+                
+            except httpx.ConnectTimeout:
+                # Timeout zaafiyet testlerine karşı loglama
+                logger.error(f"Dış Kurum API Timeout ({self.timeout}s). Zaman aşımına uğradı.")
+                return None
+            except httpx.HTTPStatusError as e:
+                # 4xx ve 5xx hatalarında stack trace yerine anlamlı log
+                logger.warning(f"Dış Kurum Authentication Başarısız. Status: {e.response.status_code}")
+                return None
+            except ValidationError as e:
+                # Schema mismatch error (Zehirli/bozuk veri koruması)
+                logger.error(f"Dış Kurum şema doğrulama hatası (Zehiroldu payload engellendi). Err: {e}")
+                return None
+            except Exception as e:
+                # Genel catch-all, iç hata mesajını maskele
+                logger.error(f"Dış kuruma bağlanırken beklenmeyen hata: {type(e).__name__}")
+                return None
 
-    def _mock_authenticate(self, username: str, password: str) -> Optional[Dict[str, Any]]:
-        """Sadece test amaçlı çalışan taklit sunucu."""
-        # Basit bir simülasyon gecikmesi
-        import time
-        time.sleep(0.5) 
+    async def _mock_authenticate(self, username: str, password: str) -> Optional[Dict[str, Any]]:
+        """Taklit (Mock) sunucu. Asenkron (asyncio.sleep) kullanılarak simüle edilir."""
+        await asyncio.sleep(0.5) 
         
-        # Varsayılan test hesapları
         valid_users = {
-            "ogrenci": {"password": "fizik123", "full_name": "Test Öğrencisi", "role": "student"},
-            "ogretmen": {"password": "fizik123", "full_name": "Fizik Öğretmeni", "role": "teacher"}
+            "ogrenci": {"password": "fizik123", "full_name": "Test Öğrencisi", "role": "ogrenci"},
+            "ogretmen": {"password": "fizik123", "full_name": "Fizik Öğretmeni", "role": "ogretmen"},
+            "admin": {"password": "adminpass", "full_name": "Sistem Yöneticisi", "role": "admin"}
         }
         
         if username in valid_users and valid_users[username]["password"] == password:

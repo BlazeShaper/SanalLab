@@ -1,0 +1,2058 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\ugrys\Desktop\SanalLab
+plugins: anyio-4.12.1, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 18 items
+
+tests\test_auth.py FE.E.E                                                [ 16%]
+tests\test_csrf.py .E.E.E                                                [ 33%]
+tests\test_errors.py FE                                                  [ 38%]
+tests\test_external_api.py .E.E                                          [ 50%]
+tests\test_headers.py .EFE                                               [ 61%]
+tests\test_jwt.py FEFEFEFE                                               [ 83%]
+tests\test_logs.py .E                                                    [ 88%]
+tests\test_roles.py .E.E                                                 [100%]
+
+=================================== ERRORS ====================================
+___________________ ERROR at teardown of test_login_success ___________________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:33,207 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:33,716 - sanal_lab.main - INFO - User 'ogrenci' successfully logged in.
+2026-03-11 18:12:33,717 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 303
+2026-03-11 18:12:33,721 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 303 See Other"
+2026-03-11 18:12:33,726 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:33,731 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 307
+2026-03-11 18:12:33,738 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+2026-03-11 18:12:33,742 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab/electrostatics from IP: testclient
+2026-03-11 18:12:33,833 - sanal_lab.security - INFO - Completed GET /sanal-lab/electrostatics with status: 200
+2026-03-11 18:12:33,835 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab/electrostatics "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+INFO     sanal_lab.main:main.py:172 User 'ogrenci' successfully logged in.
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 303
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 303 See Other"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 307
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab/electrostatics from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab/electrostatics with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab/electrostatics "HTTP/1.1 200 OK"
+___________ ERROR at teardown of test_login_failure_wrong_password ____________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:33,989 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:34,514 - sanal_lab.main - WARNING - Failed login attempt for username: ogrenci
+2026-03-11 18:12:34,572 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 200
+2026-03-11 18:12:34,575 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.main:main.py:175 Failed login attempt for username: ogrenci
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+______________ ERROR at teardown of test_brute_force_rate_limit _______________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:34,593 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:35,104 - sanal_lab.main - WARNING - Failed login attempt for username: hacker
+2026-03-11 18:12:35,105 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 200
+2026-03-11 18:12:35,111 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+2026-03-11 18:12:35,119 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:35,641 - sanal_lab.main - WARNING - Failed login attempt for username: hacker
+2026-03-11 18:12:35,642 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 200
+2026-03-11 18:12:35,646 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+2026-03-11 18:12:35,649 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:36,158 - sanal_lab.main - WARNING - Failed login attempt for username: hacker
+2026-03-11 18:12:36,160 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 200
+2026-03-11 18:12:36,163 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+2026-03-11 18:12:36,167 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:36,174 - slowapi - WARNING - ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+2026-03-11 18:12:36,175 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 429
+2026-03-11 18:12:36,180 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+2026-03-11 18:12:36,185 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:36,190 - slowapi - WARNING - ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+2026-03-11 18:12:36,192 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 429
+2026-03-11 18:12:36,194 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+2026-03-11 18:12:36,197 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:36,202 - slowapi - WARNING - ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+2026-03-11 18:12:36,204 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 429
+2026-03-11 18:12:36,206 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.main:main.py:175 Failed login attempt for username: hacker
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.main:main.py:175 Failed login attempt for username: hacker
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.main:main.py:175 Failed login attempt for username: hacker
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 429
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 429
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 429
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+_________ ERROR at teardown of test_post_without_csrf_token_rejected __________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:36,237 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:36,243 - sanal_lab.security.csrf - WARNING - CSRF Alert: Missing CSRF token in Cookie or Header
+2026-03-11 18:12:36,243 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 403
+2026-03-11 18:12:36,245 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 403 Forbidden"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.security.csrf:csrf.py:49 CSRF Alert: Missing CSRF token in Cookie or Header
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 403
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 403 Forbidden"
+________ ERROR at teardown of test_post_with_mismatched_csrf_rejected _________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:36,264 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:36,267 - sanal_lab.security.csrf - WARNING - CSRF Alert: Tokens do not match (Header vs Cookie)
+2026-03-11 18:12:36,267 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 403
+2026-03-11 18:12:36,270 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 403 Forbidden"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.security.csrf:csrf.py:54 CSRF Alert: Tokens do not match (Header vs Cookie)
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 403
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 403 Forbidden"
+_________________ ERROR at teardown of test_csrf_origin_check _________________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:36,291 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:36,293 - sanal_lab.security.csrf - WARNING - CSRF Alert: Origin 'http://evil-hacker-site.com' does not match Host 'http://testserver'
+2026-03-11 18:12:36,294 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 403
+2026-03-11 18:12:36,295 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 403 Forbidden"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.security.csrf:csrf.py:33 CSRF Alert: Origin 'http://evil-hacker-site.com' does not match Host 'http://testserver'
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 403
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 403 Forbidden"
+_________ ERROR at teardown of test_internal_server_error_obfuscation _________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:36,309 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-logout from IP: testclient
+2026-03-11 18:12:36,312 - sanal_lab.security - ERROR - Error processing POST /sanal-lab-logout: Database Connection Lost! THIS IS A SECRET
+2026-03-11 18:12:36,312 - sanal_lab.main - ERROR - Global Exception on http://testserver/sanal-lab-logout: Database Connection Lost! THIS IS A SECRET
+  + Exception Group Traceback (most recent call last):
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    |     raise e
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    |     response: Response = await call_next(request)
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     ...<3 lines>...
+    |     )
+    |     ^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    |     revoke_token(access)
+    |     ~~~~~~~~~~~~^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    |     return self._mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    |     return self._execute_mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    |     raise effect
+    | Exception: Database Connection Lost! THIS IS A SECRET
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    raise e
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    response: Response = await call_next(request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    revoke_token(access)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database Connection Lost! THIS IS A SECRET
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-logout from IP: testclient
+ERROR    sanal_lab.security:log_sanitizer.py:61 Error processing POST /sanal-lab-logout: Database Connection Lost! THIS IS A SECRET
+ERROR    sanal_lab.main:main.py:76 Global Exception on http://testserver/sanal-lab-logout: Database Connection Lost! THIS IS A SECRET
+  + Exception Group Traceback (most recent call last):
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    |     raise e
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    |     response: Response = await call_next(request)
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     ...<3 lines>...
+    |     )
+    |     ^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    |     revoke_token(access)
+    |     ~~~~~~~~~~~~^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    |     return self._mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    |     return self._execute_mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    |     raise effect
+    | Exception: Database Connection Lost! THIS IS A SECRET
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    raise e
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    response: Response = await call_next(request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    revoke_token(access)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database Connection Lost! THIS IS A SECRET
+_______________ ERROR at teardown of test_external_api_timeout ________________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:37,723 - sanal_lab.security.external - ERROR - EXTERNAL_API_URL (http://mock-url) is NOT in the allowlist! Requests will fail.
+------------------------------ Captured log call ------------------------------
+ERROR    sanal_lab.security.external:external_auth.py:42 EXTERNAL_API_URL (http://mock-url) is NOT in the allowlist! Requests will fail.
+______________ ERROR at teardown of test_external_api_allowlist _______________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,263 - sanal_lab.security.external - ERROR - EXTERNAL_API_URL (http://mock-url) is NOT in the allowlist! Requests will fail.
+2026-03-11 18:12:38,263 - sanal_lab.security.external - ERROR - EXTERNAL_API_URL (http://bad-hacker-domain.com) is NOT in the allowlist! Requests will fail.
+------------------------------ Captured log call ------------------------------
+ERROR    sanal_lab.security.external:external_auth.py:42 EXTERNAL_API_URL (http://mock-url) is NOT in the allowlist! Requests will fail.
+ERROR    sanal_lab.security.external:external_auth.py:42 EXTERNAL_API_URL (http://bad-hacker-domain.com) is NOT in the allowlist! Requests will fail.
+_____________ ERROR at teardown of test_security_headers_present ______________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,288 - sanal_lab.security - INFO - Incoming GET request to / from IP: testclient
+2026-03-11 18:12:38,350 - sanal_lab.security - INFO - Completed GET / with status: 200
+2026-03-11 18:12:38,355 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to / from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET / with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+_______________ ERROR at teardown of test_cookie_security_flags _______________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,383 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:38,386 - slowapi - WARNING - ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+2026-03-11 18:12:38,388 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 429
+2026-03-11 18:12:38,389 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 429
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+__________ ERROR at teardown of test_jwt_access_denied_without_token __________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,433 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,437 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 401
+2026-03-11 18:12:38,440 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 401
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+________ ERROR at teardown of test_jwt_access_granted_with_valid_token ________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,493 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,497 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 307
+2026-03-11 18:12:38,500 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 307
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+__________ ERROR at teardown of test_jwt_invalid_signature_rejected ___________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,521 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,523 - sanal_lab.security.jwt - ERROR - Invalid JWT Token signature attempt: Signature verification failed
+2026-03-11 18:12:38,523 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 401
+2026-03-11 18:12:38,526 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+ERROR    sanal_lab.security.jwt:jwt_handler.py:103 Invalid JWT Token signature attempt: Signature verification failed
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 401
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+_____________ ERROR at teardown of test_jwt_logout_revokes_token ______________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,544 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-logout from IP: testclient
+2026-03-11 18:12:38,547 - sanal_lab.security.jwt - INFO - Token revoked. JTI: 651ded44-a663-42bd-aa2a-f457e5475f21
+2026-03-11 18:12:38,548 - sanal_lab.main - INFO - User logged out successfully.
+2026-03-11 18:12:38,548 - sanal_lab.security - INFO - Completed POST /sanal-lab-logout with status: 303
+2026-03-11 18:12:38,549 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-logout "HTTP/1.1 303 See Other"
+2026-03-11 18:12:38,552 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,554 - sanal_lab.security.jwt - WARNING - Attempted use of a revoked token.
+2026-03-11 18:12:38,555 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 401
+2026-03-11 18:12:38,556 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-logout from IP: testclient
+INFO     sanal_lab.security.jwt:jwt_handler.py:69 Token revoked. JTI: 651ded44-a663-42bd-aa2a-f457e5475f21
+INFO     sanal_lab.main:main.py:220 User logged out successfully.
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-logout with status: 303
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-logout "HTTP/1.1 303 See Other"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+WARNING  sanal_lab.security.jwt:jwt_handler.py:92 Attempted use of a revoked token.
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 401
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+_______ ERROR at teardown of test_log_sanitizer_removes_sensitive_data ________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,571 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,572 - sanal_lab.security.jwt - ERROR - Invalid JWT Token signature attempt: Not enough segments
+2026-03-11 18:12:38,573 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 401
+2026-03-11 18:12:38,575 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+ERROR    sanal_lab.security.jwt:jwt_handler.py:103 Invalid JWT Token signature attempt: Not enough segments
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 401
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+_____________ ERROR at teardown of test_rbac_admin_access_granted _____________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,585 - sanal_lab.security - INFO - Incoming GET request to /api/admin/reports from IP: testclient
+2026-03-11 18:12:38,588 - sanal_lab.security - INFO - Completed GET /api/admin/reports with status: 200
+2026-03-11 18:12:38,590 - httpx - INFO - HTTP Request: GET http://testserver/api/admin/reports "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /api/admin/reports from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /api/admin/reports with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api/admin/reports "HTTP/1.1 200 OK"
+____________ ERROR at teardown of test_rbac_student_access_denied _____________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,602 - sanal_lab.security - INFO - Incoming GET request to /api/admin/reports from IP: testclient
+2026-03-11 18:12:38,604 - sanal_lab.security.roles - WARNING - Access Denied: User 'ogrenci_user' with role 'ogrenci' attempted to access restricted resource. Allowed: ['admin', 'ogretmen']
+2026-03-11 18:12:38,604 - sanal_lab.security - INFO - Completed GET /api/admin/reports with status: 403
+2026-03-11 18:12:38,606 - httpx - INFO - HTTP Request: GET http://testserver/api/admin/reports "HTTP/1.1 403 Forbidden"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /api/admin/reports from IP: testclient
+WARNING  sanal_lab.security.roles:roles.py:44 Access Denied: User 'ogrenci_user' with role 'ogrenci' attempted to access restricted resource. Allowed: ['admin', 'ogretmen']
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /api/admin/reports with status: 403
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api/admin/reports "HTTP/1.1 403 Forbidden"
+================================== FAILURES ===================================
+_____________________________ test_login_success ______________________________
+
+    def test_login_success():
+        """Doðru kullanýcý adý ve þifre ile giriþ denemesi."""
+        response = client.post(
+            "/sanal-lab-login",
+            data={"username": "ogrenci", "password": "fizik123"},
+            # Security test: Double Submit CSRF must be present to pass!
+            headers={"X-CSRF-Token": "test_csrf_token"},
+            cookies={"csrftoken": "test_csrf_token"}
+        )
+        # Login baþarýlý olunca yönlendirme(303) yapar
+>       assert response.status_code == 303
+E       assert 200 == 303
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\test_auth.py:17: AssertionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:33,207 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:33,716 - sanal_lab.main - INFO - User 'ogrenci' successfully logged in.
+2026-03-11 18:12:33,717 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 303
+2026-03-11 18:12:33,721 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 303 See Other"
+2026-03-11 18:12:33,726 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:33,731 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 307
+2026-03-11 18:12:33,738 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+2026-03-11 18:12:33,742 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab/electrostatics from IP: testclient
+2026-03-11 18:12:33,833 - sanal_lab.security - INFO - Completed GET /sanal-lab/electrostatics with status: 200
+2026-03-11 18:12:33,835 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab/electrostatics "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+INFO     sanal_lab.main:main.py:172 User 'ogrenci' successfully logged in.
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 303
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 303 See Other"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 307
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab/electrostatics from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab/electrostatics with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab/electrostatics "HTTP/1.1 200 OK"
+___________________ test_internal_server_error_obfuscation ____________________
+  + Exception Group Traceback (most recent call last):
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\_pytest\runner.py", line 353, in from_call
+    |     result: TResult | None = func()
+    |                              ~~~~^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\_pytest\runner.py", line 245, in <lambda>
+    |     lambda: runtest_hook(item=item, **kwds),
+    |             ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    |     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    |            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    |     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    |            ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 167, in _multicall
+    |     raise exception
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |     ~~~~~~~~~~~~~~^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\_pytest\logging.py", line 850, in pytest_runtest_call
+    |     yield
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |     ~~~~~~~~~~~~~~^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\_pytest\capture.py", line 900, in pytest_runtest_call
+    |     return (yield)
+    |             ^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |     ~~~~~~~~~~~~~~^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\_pytest\skipping.py", line 268, in pytest_runtest_call
+    |     return (yield)
+    |             ^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    |     res = hook_impl.function(*args)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\_pytest\runner.py", line 179, in pytest_runtest_call
+    |     item.runtest()
+    |     ~~~~~~~~~~~~^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\_pytest\python.py", line 1720, in runtest
+    |     self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+    |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    |     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    |            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    |     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    |            ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 167, in _multicall
+    |     raise exception
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |     ~~~~~~~~~~~~~~^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 53, in run_old_style_hookwrapper
+    |     return result.get_result()
+    |            ~~~~~~~~~~~~~~~~~^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_result.py", line 103, in get_result
+    |     raise exc.with_traceback(tb)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 38, in run_old_style_hookwrapper
+    |     res = yield
+    |           ^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    |     res = hook_impl.function(*args)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\_pytest\python.py", line 166, in pytest_pyfunc_call
+    |     result = testfunction(**testargs)
+    |   File "C:\Users\ugrys\Desktop\SanalLab\tests\test_errors.py", line 19, in test_internal_server_error_obfuscation
+    |     response = client.post(
+    |         "/sanal-lab-logout",
+    |         headers={"X-CSRF-Token": "test"},
+    |         cookies={"csrftoken": "test", "sanal_lab_auth": "dummy_token"}
+    |     )
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py", line 597, in post
+    |     return super().post(
+    |            ~~~~~~~~~~~~^
+    |         url,
+    |         ^^^^
+    |     ...<10 lines>...
+    |         extensions=extensions,
+    |         ^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 1144, in post
+    |     return self.request(
+    |            ~~~~~~~~~~~~^
+    |         "POST",
+    |         ^^^^^^^
+    |     ...<11 lines>...
+    |         extensions=extensions,
+    |         ^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py", line 488, in request
+    |     return super().request(
+    |            ~~~~~~~~~~~~~~~^
+    |         method,
+    |         ^^^^^^^
+    |     ...<11 lines>...
+    |         extensions=extensions,
+    |         ^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 825, in request
+    |     return self.send(request, auth=auth, follow_redirects=follow_redirects)
+    |            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 914, in send
+    |     response = self._send_handling_auth(
+    |         request,
+    |     ...<2 lines>...
+    |         history=[],
+    |     )
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    |     response = self._send_handling_redirects(
+    |         request,
+    |         follow_redirects=follow_redirects,
+    |         history=history,
+    |     )
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    |     response = self._send_single_request(request)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    |     response = transport.handle_request(request)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py", line 381, in handle_request
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py", line 378, in handle_request
+    |     portal.call(self.app, scope, receive, send)
+    |     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\from_thread.py", line 334, in call
+    |     return cast(T_Retval, self.start_task_soon(func, *args).result())
+    |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 456, in result
+    |     return self.__get_result()
+    |            ~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    |     raise self._exception
+    |   File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\from_thread.py", line 259, in _call_func
+    |     retval = await retval_or_awaitable
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\applications.py", line 1054, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 187, in __call__
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    |     raise e
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    |     response: Response = await call_next(request)
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     ...<3 lines>...
+    |     )
+    |     ^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    |     revoke_token(access)
+    |     ~~~~~~~~~~~~^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    |     return self._mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    |     return self._execute_mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    |     raise effect
+    | Exception: Database Connection Lost! THIS IS A SECRET
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ugrys\Desktop\SanalLab\tests\test_errors.py", line 19, in test_internal_server_error_obfuscation
+    response = client.post(
+        "/sanal-lab-logout",
+        headers={"X-CSRF-Token": "test"},
+        cookies={"csrftoken": "test", "sanal_lab_auth": "dummy_token"}
+    )
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py", line 597, in post
+    return super().post(
+           ~~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<10 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 1144, in post
+    return self.request(
+           ~~~~~~~~~~~~^
+        "POST",
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py", line 488, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py", line 381, in handle_request
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py", line 378, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\from_thread.py", line 334, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 456, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\from_thread.py", line 259, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 187, in __call__
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    raise e
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    response: Response = await call_next(request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    revoke_token(access)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database Connection Lost! THIS IS A SECRET
+
+During handling of the above exception, another exception occurred:
+
+    def test_internal_server_error_obfuscation():
+        """
+        Sistemde oluþabilecek sunucu kaynaklý bir hata durumunda
+        API'ýn kullanýcýya detaylý (stack trace) bilgisini sýzdýrmadýðýndan
+        ve generic bir 500 hatasý döndüðünden emin olunur.
+        """
+    
+        # Kasýtlý olarak /sanal-lab-logout endpointini bir
+        # Exception fýrlatmaya zorluyoruz
+        with patch('app.main.revoke_token', side_effect=Exception("Database Connection Lost! THIS IS A SECRET")):
+>           response = client.post(
+                "/sanal-lab-logout",
+                headers={"X-CSRF-Token": "test"},
+                cookies={"csrftoken": "test", "sanal_lab_auth": "dummy_token"}
+            )
+
+tests\test_errors.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\starlette\testclient.py:597: in post
+    return super().post(
+.venv\Lib\site-packages\httpx\_client.py:1144: in post
+    return self.request(
+.venv\Lib\site-packages\starlette\testclient.py:488: in request
+    return super().request(
+.venv\Lib\site-packages\httpx\_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:914: in send
+    response = self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:942: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:979: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1014: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\starlette\testclient.py:381: in handle_request
+    raise exc
+.venv\Lib\site-packages\starlette\testclient.py:378: in handle_request
+    portal.call(self.app, scope, receive, send)
+.venv\Lib\site-packages\anyio\from_thread.py:334: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+.venv\Lib\site-packages\anyio\from_thread.py:259: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\fastapi\applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:113: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:187: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\base.py:185: in __call__
+    with collapse_excgroups():
+         ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\contextlib.py:162: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:83: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:187: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\middleware\log_sanitizer.py:62: in dispatch
+    raise e
+app\middleware\log_sanitizer.py:53: in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\starlette\middleware\base.py:163: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:185: in __call__
+    with collapse_excgroups():
+         ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\contextlib.py:162: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:83: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:187: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\middleware\security_headers.py:11: in dispatch
+    response: Response = await call_next(request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\starlette\middleware\base.py:163: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv\Lib\site-packages\starlette\_exception_handler.py:62: in wrapped_app
+    raise exc
+.venv\Lib\site-packages\starlette\_exception_handler.py:51: in wrapped_app
+    await app(scope, receive, sender)
+.venv\Lib\site-packages\starlette\routing.py:715: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:735: in app
+    await route.handle(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:288: in handle
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv\Lib\site-packages\starlette\_exception_handler.py:62: in wrapped_app
+    raise exc
+.venv\Lib\site-packages\starlette\_exception_handler.py:51: in wrapped_app
+    await app(scope, receive, sender)
+.venv\Lib\site-packages\starlette\routing.py:73: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\fastapi\routing.py:301: in app
+    raw_response = await run_endpoint_function(
+.venv\Lib\site-packages\fastapi\routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\main.py:215: in sanal_lab_logout
+    revoke_token(access)
+..\..\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py:1169: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py:1173: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='revoke_token' id='1689573356416'>
+args = ('dummy_token',), kwargs = {}
+effect = Exception('Database Connection Lost! THIS IS A SECRET')
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+>               raise effect
+E               Exception: Database Connection Lost! THIS IS A SECRET
+
+..\..\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py:1228: Exception
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:36,309 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-logout from IP: testclient
+2026-03-11 18:12:36,312 - sanal_lab.security - ERROR - Error processing POST /sanal-lab-logout: Database Connection Lost! THIS IS A SECRET
+2026-03-11 18:12:36,312 - sanal_lab.main - ERROR - Global Exception on http://testserver/sanal-lab-logout: Database Connection Lost! THIS IS A SECRET
+  + Exception Group Traceback (most recent call last):
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    |     raise e
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    |     response: Response = await call_next(request)
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     ...<3 lines>...
+    |     )
+    |     ^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    |     revoke_token(access)
+    |     ~~~~~~~~~~~~^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    |     return self._mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    |     return self._execute_mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    |     raise effect
+    | Exception: Database Connection Lost! THIS IS A SECRET
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    raise e
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    response: Response = await call_next(request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    revoke_token(access)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database Connection Lost! THIS IS A SECRET
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-logout from IP: testclient
+ERROR    sanal_lab.security:log_sanitizer.py:61 Error processing POST /sanal-lab-logout: Database Connection Lost! THIS IS A SECRET
+ERROR    sanal_lab.main:main.py:76 Global Exception on http://testserver/sanal-lab-logout: Database Connection Lost! THIS IS A SECRET
+  + Exception Group Traceback (most recent call last):
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 77, in collapse_excgroups
+  |     yield
+  |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "C:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    |     raise e
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |          ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    |     response: Response = await call_next(request)
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    |     raise exc
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     ...<3 lines>...
+    |     )
+    |     ^
+    |   File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    |     revoke_token(access)
+    |     ~~~~~~~~~~~~^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    |     return self._mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    |     return self._execute_mock_call(*args, **kwargs)
+    |            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+    |   File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    |     raise effect
+    | Exception: Database Connection Lost! THIS IS A SECRET
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 62, in dispatch
+    raise e
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\log_sanitizer.py", line 53, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 185, in __call__
+    with collapse_excgroups():
+         ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_utils.py", line 83, in collapse_excgroups
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\middleware\security_headers.py", line 11, in dispatch
+    response: Response = await call_next(request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 163, in call_next
+    raise app_exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\Desktop\SanalLab\app\main.py", line 215, in sanal_lab_logout
+    revoke_token(access)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ugrys\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+Exception: Database Connection Lost! THIS IS A SECRET
+_________________________ test_cookie_security_flags __________________________
+
+    def test_cookie_security_flags():
+        """
+        Login sonrasý dönen auth çerezlerinde HttpOnly ve SameSite
+        flag'lerinin kesinlikle olduðundan emin olunur.
+        """
+        response = client.post(
+            "/sanal-lab-login",
+            data={"username": "ogrenci", "password": "fizik123"},
+            headers={"X-CSRF-Token": "test"},
+            cookies={"csrftoken": "test"},
+            allow_redirects=False
+        )
+    
+        cookies = response.headers.get_list("set-cookie")
+        auth_cookie = next((c for c in cookies if "sanal_lab_auth=" in c), None)
+    
+>       assert auth_cookie is not None
+E       assert None is not None
+
+tests\test_headers.py:39: AssertionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,383 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:12:38,386 - slowapi - WARNING - ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+2026-03-11 18:12:38,388 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 429
+2026-03-11 18:12:38,389 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 429
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+____________________ test_jwt_access_denied_without_token _____________________
+
+    def test_jwt_access_denied_without_token():
+        """Sanal Lab'a tokensýz eriþim 303 yönlendirmesiyle reddedilmeli"""
+        response = client.get("/sanal-lab", allow_redirects=False)
+>       assert response.status_code == 303
+E       assert 401 == 303
+E        +  where 401 = <Response [401 Unauthorized]>.status_code
+
+tests\test_jwt.py:12: AssertionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,433 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,437 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 401
+2026-03-11 18:12:38,440 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 401
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+__________________ test_jwt_access_granted_with_valid_token ___________________
+
+    def test_jwt_access_granted_with_valid_token():
+        """Geçerli tokený olan içeriðe eriþebilmeli"""
+        access_token, _ = create_tokens({"sub": "ogrenci", "role": "ogrenci"})
+    
+        response = client.get(
+            "/sanal-lab",
+            cookies={"sanal_lab_auth": access_token},
+            allow_redirects=False
+        )
+>       assert response.status_code in [200, 303]
+E       assert 307 in [200, 303]
+E        +  where 307 = <Response [307 Temporary Redirect]>.status_code
+
+tests\test_jwt.py:24: AssertionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,493 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,497 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 307
+2026-03-11 18:12:38,500 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 307
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+_____________________ test_jwt_invalid_signature_rejected _____________________
+
+    def test_jwt_invalid_signature_rejected():
+        """Müdahale edilmiþ token reddedilmeli"""
+        # Token'ý tahrif edelim
+        fake_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.fake_signature_123"
+    
+        response = client.get(
+            "/sanal-lab",
+            cookies={"sanal_lab_auth": fake_token},
+            allow_redirects=False
+        )
+        # Sistem hileli tokeni görüp login'e atacaktýr
+>       assert response.status_code == 303
+E       assert 401 == 303
+E        +  where 401 = <Response [401 Unauthorized]>.status_code
+
+tests\test_jwt.py:37: AssertionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,521 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,523 - sanal_lab.security.jwt - ERROR - Invalid JWT Token signature attempt: Signature verification failed
+2026-03-11 18:12:38,523 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 401
+2026-03-11 18:12:38,526 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+ERROR    sanal_lab.security.jwt:jwt_handler.py:103 Invalid JWT Token signature attempt: Signature verification failed
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 401
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+________________________ test_jwt_logout_revokes_token ________________________
+
+    def test_jwt_logout_revokes_token():
+        """Logout sonrasý tokenler bir daha kullanýlamaz olmalý (Blacklist kontrolü)"""
+        access_token, _ = create_tokens({"sub": "ogrenci", "role": "ogrenci"})
+    
+        # Logout atýyoruz (CSRF gerekli)
+        client.post(
+            "/sanal-lab-logout",
+            headers={"X-CSRF-Token": "test_csrf_token"},
+            cookies={"csrftoken": "test_csrf_token", "sanal_lab_auth": access_token},
+            allow_redirects=False
+        )
+    
+        # Tekrar o tokenle girmeye çalýþalým
+        response = client.get(
+            "/sanal-lab",
+            cookies={"sanal_lab_auth": access_token},
+            allow_redirects=False
+        )
+        # Kara listeye alýndýðý için reddedilip logine döndürmeli
+>       assert response.status_code == 303
+E       assert 401 == 303
+E        +  where 401 = <Response [401 Unauthorized]>.status_code
+
+tests\test_jwt.py:58: AssertionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:12:38,544 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-logout from IP: testclient
+2026-03-11 18:12:38,547 - sanal_lab.security.jwt - INFO - Token revoked. JTI: 651ded44-a663-42bd-aa2a-f457e5475f21
+2026-03-11 18:12:38,548 - sanal_lab.main - INFO - User logged out successfully.
+2026-03-11 18:12:38,548 - sanal_lab.security - INFO - Completed POST /sanal-lab-logout with status: 303
+2026-03-11 18:12:38,549 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-logout "HTTP/1.1 303 See Other"
+2026-03-11 18:12:38,552 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:12:38,554 - sanal_lab.security.jwt - WARNING - Attempted use of a revoked token.
+2026-03-11 18:12:38,555 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 401
+2026-03-11 18:12:38,556 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-logout from IP: testclient
+INFO     sanal_lab.security.jwt:jwt_handler.py:69 Token revoked. JTI: 651ded44-a663-42bd-aa2a-f457e5475f21
+INFO     sanal_lab.main:main.py:220 User logged out successfully.
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-logout with status: 303
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-logout "HTTP/1.1 303 See Other"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+WARNING  sanal_lab.security.jwt:jwt_handler.py:92 Attempted use of a revoked token.
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 401
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 401 Unauthorized"
+============================== warnings summary ===============================
+app\main.py:65
+  C:\Users\ugrys\Desktop\SanalLab\app\main.py:65: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv\Lib\site-packages\fastapi\applications.py:4495
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\applications.py:4495: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)
+
+tests/test_auth.py: 8 warnings
+tests/test_csrf.py: 2 warnings
+tests/test_errors.py: 1 warning
+tests/test_headers.py: 1 warning
+tests/test_jwt.py: 4 warnings
+tests/test_logs.py: 1 warning
+tests/test_roles.py: 2 warnings
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py:488: DeprecationWarning: Setting per-request cookies=<...> is being deprecated, because the expected behaviour on cookie persistence is ambiguous. Set cookies directly on the client instance instead.
+    return super().request(
+
+tests/test_auth.py::test_login_success
+tests/test_jwt.py::test_jwt_access_granted_with_valid_token
+tests/test_jwt.py::test_jwt_logout_revokes_token
+tests/test_roles.py::test_rbac_admin_access_granted
+tests/test_roles.py::test_rbac_student_access_denied
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\jwt\api_jwt.py:153: InsecureKeyLengthWarning: The HMAC key is 21 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+tests/test_auth.py::test_login_success
+tests/test_jwt.py::test_jwt_access_granted_with_valid_token
+tests/test_jwt.py::test_jwt_invalid_signature_rejected
+tests/test_jwt.py::test_jwt_logout_revokes_token
+tests/test_roles.py::test_rbac_admin_access_granted
+tests/test_roles.py::test_rbac_student_access_denied
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\jwt\api_jwt.py:371: InsecureKeyLengthWarning: The HMAC key is 21 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+tests/test_auth.py::test_login_success
+tests/test_auth.py::test_login_failure_wrong_password
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_errors.py::test_internal_server_error_obfuscation
+tests/test_headers.py::test_security_headers_present
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\templating.py:161: DeprecationWarning: The `name` is not the first parameter anymore. The first parameter should be the `Request` instance.
+  Replace `TemplateResponse(name, {"request": request})` by `TemplateResponse(request, name)`.
+    warnings.warn(
+
+tests/test_headers.py::test_cookie_security_flags
+tests/test_jwt.py::test_jwt_access_denied_without_token
+tests/test_jwt.py::test_jwt_access_granted_with_valid_token
+tests/test_jwt.py::test_jwt_invalid_signature_rejected
+tests/test_jwt.py::test_jwt_logout_revokes_token
+tests/test_jwt.py::test_jwt_logout_revokes_token
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py:458: DeprecationWarning: The `allow_redirects` argument is deprecated. Use `follow_redirects` instead.
+    warnings.warn(message, DeprecationWarning)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_auth.py::test_login_success - assert 200 == 303
+FAILED tests/test_errors.py::test_internal_server_error_obfuscation - Excepti...
+FAILED tests/test_headers.py::test_cookie_security_flags - assert None is not...
+FAILED tests/test_jwt.py::test_jwt_access_denied_without_token - assert 401 =...
+FAILED tests/test_jwt.py::test_jwt_access_granted_with_valid_token - assert 3...
+FAILED tests/test_jwt.py::test_jwt_invalid_signature_rejected - assert 401 ==...
+FAILED tests/test_jwt.py::test_jwt_logout_revokes_token - assert 401 == 303
+ERROR tests/test_auth.py::test_login_success - PermissionError: [WinError 32]...
+ERROR tests/test_auth.py::test_login_failure_wrong_password - PermissionError...
+ERROR tests/test_auth.py::test_brute_force_rate_limit - PermissionError: [Win...
+ERROR tests/test_csrf.py::test_post_without_csrf_token_rejected - PermissionE...
+ERROR tests/test_csrf.py::test_post_with_mismatched_csrf_rejected - Permissio...
+ERROR tests/test_csrf.py::test_csrf_origin_check - PermissionError: [WinError...
+ERROR tests/test_errors.py::test_internal_server_error_obfuscation - Permissi...
+ERROR tests/test_external_api.py::test_external_api_timeout - PermissionError...
+ERROR tests/test_external_api.py::test_external_api_allowlist - PermissionErr...
+ERROR tests/test_headers.py::test_security_headers_present - PermissionError:...
+ERROR tests/test_headers.py::test_cookie_security_flags - PermissionError: [W...
+ERROR tests/test_jwt.py::test_jwt_access_denied_without_token - PermissionErr...
+ERROR tests/test_jwt.py::test_jwt_access_granted_with_valid_token - Permissio...
+ERROR tests/test_jwt.py::test_jwt_invalid_signature_rejected - PermissionErro...
+ERROR tests/test_jwt.py::test_jwt_logout_revokes_token - PermissionError: [Wi...
+ERROR tests/test_logs.py::test_log_sanitizer_removes_sensitive_data - Permiss...
+ERROR tests/test_roles.py::test_rbac_admin_access_granted - PermissionError: ...
+ERROR tests/test_roles.py::test_rbac_student_access_denied - PermissionError:...
+============ 7 failed, 11 passed, 45 warnings, 18 errors in 5.49s =============

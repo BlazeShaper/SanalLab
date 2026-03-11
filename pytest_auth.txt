@@ -1,0 +1,228 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\ugrys\Desktop\SanalLab
+plugins: anyio-4.12.1, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 3 items
+
+tests\test_auth.py FE.E.E                                                [100%]
+
+=================================== ERRORS ====================================
+___________________ ERROR at teardown of test_login_success ___________________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:15:36,167 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:36,671 - sanal_lab.main - INFO - User 'ogrenci' successfully logged in.
+2026-03-11 18:15:36,672 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 303
+2026-03-11 18:15:36,676 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 303 See Other"
+2026-03-11 18:15:36,681 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:15:36,685 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 307
+2026-03-11 18:15:36,690 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+2026-03-11 18:15:36,692 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab/electrostatics from IP: testclient
+2026-03-11 18:15:36,702 - sanal_lab.security - INFO - Completed GET /sanal-lab/electrostatics with status: 200
+2026-03-11 18:15:36,703 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab/electrostatics "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+INFO     sanal_lab.main:main.py:172 User 'ogrenci' successfully logged in.
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 303
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 303 See Other"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 307
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab/electrostatics from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab/electrostatics with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab/electrostatics "HTTP/1.1 200 OK"
+___________ ERROR at teardown of test_login_failure_wrong_password ____________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:15:36,893 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:37,402 - sanal_lab.main - WARNING - Failed login attempt for username: ogrenci
+2026-03-11 18:15:37,408 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 200
+2026-03-11 18:15:37,411 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.main:main.py:175 Failed login attempt for username: ogrenci
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+______________ ERROR at teardown of test_brute_force_rate_limit _______________
+
+    @pytest.fixture(autouse=True)
+    def setup_test_db():
+        # Test veritabaný kurulumu (Gerekirse)
+        from app.db import init_db
+        init_db()
+        yield
+        # Temizlik
+        if os.path.exists("./test_sanal_lab.db"):
+>           os.remove("./test_sanal_lab.db")
+E           PermissionError: [WinError 32] Dosya baþka bir iþlem tarafýndan kullanýldýðýndan bu iþlem dosyaya eriþemiyor: './test_sanal_lab.db'
+
+tests\conftest.py:21: PermissionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:15:37,428 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:37,936 - sanal_lab.main - WARNING - Failed login attempt for username: hacker
+2026-03-11 18:15:37,936 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 200
+2026-03-11 18:15:37,937 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+2026-03-11 18:15:37,940 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:38,454 - sanal_lab.main - WARNING - Failed login attempt for username: hacker
+2026-03-11 18:15:38,455 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 200
+2026-03-11 18:15:38,456 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+2026-03-11 18:15:38,458 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:38,963 - sanal_lab.main - WARNING - Failed login attempt for username: hacker
+2026-03-11 18:15:38,963 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 200
+2026-03-11 18:15:38,964 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+2026-03-11 18:15:38,966 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:38,967 - slowapi - WARNING - ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+2026-03-11 18:15:38,968 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 429
+2026-03-11 18:15:38,969 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+2026-03-11 18:15:38,970 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:38,972 - slowapi - WARNING - ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+2026-03-11 18:15:38,972 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 429
+2026-03-11 18:15:38,973 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+2026-03-11 18:15:38,974 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:38,976 - slowapi - WARNING - ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+2026-03-11 18:15:38,976 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 429
+2026-03-11 18:15:38,977 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.main:main.py:175 Failed login attempt for username: hacker
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.main:main.py:175 Failed login attempt for username: hacker
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  sanal_lab.main:main.py:175 Failed login attempt for username: hacker
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 200 OK"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 429
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 429
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /sanal-lab-login
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 429
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 429 Too Many Requests"
+================================== FAILURES ===================================
+_____________________________ test_login_success ______________________________
+
+    def test_login_success():
+        """Doðru kullanýcý adý ve þifre ile giriþ denemesi."""
+        response = client.post(
+            "/sanal-lab-login",
+            data={"username": "ogrenci", "password": "fizik123"},
+            # Security test: Double Submit CSRF must be present to pass!
+            headers={"X-CSRF-Token": "test_csrf_token"},
+            cookies={"csrftoken": "test_csrf_token"}
+        )
+        # Login baþarýlý olunca yönlendirme(303) yapar
+>       assert response.status_code == 303
+E       assert 200 == 303
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\test_auth.py:17: AssertionError
+---------------------------- Captured stderr call -----------------------------
+2026-03-11 18:15:36,167 - sanal_lab.security - INFO - Incoming POST request to /sanal-lab-login from IP: testclient
+2026-03-11 18:15:36,671 - sanal_lab.main - INFO - User 'ogrenci' successfully logged in.
+2026-03-11 18:15:36,672 - sanal_lab.security - INFO - Completed POST /sanal-lab-login with status: 303
+2026-03-11 18:15:36,676 - httpx - INFO - HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 303 See Other"
+2026-03-11 18:15:36,681 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab from IP: testclient
+2026-03-11 18:15:36,685 - sanal_lab.security - INFO - Completed GET /sanal-lab with status: 307
+2026-03-11 18:15:36,690 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+2026-03-11 18:15:36,692 - sanal_lab.security - INFO - Incoming GET request to /sanal-lab/electrostatics from IP: testclient
+2026-03-11 18:15:36,702 - sanal_lab.security - INFO - Completed GET /sanal-lab/electrostatics with status: 200
+2026-03-11 18:15:36,703 - httpx - INFO - HTTP Request: GET http://testserver/sanal-lab/electrostatics "HTTP/1.1 200 OK"
+------------------------------ Captured log call ------------------------------
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming POST request to /sanal-lab-login from IP: testclient
+INFO     sanal_lab.main:main.py:172 User 'ogrenci' successfully logged in.
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed POST /sanal-lab-login with status: 303
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/sanal-lab-login "HTTP/1.1 303 See Other"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab with status: 307
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab "HTTP/1.1 307 Temporary Redirect"
+INFO     sanal_lab.security:log_sanitizer.py:29 Incoming GET request to /sanal-lab/electrostatics from IP: testclient
+INFO     sanal_lab.security:log_sanitizer.py:56 Completed GET /sanal-lab/electrostatics with status: 200
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/sanal-lab/electrostatics "HTTP/1.1 200 OK"
+============================== warnings summary ===============================
+app\main.py:65
+  C:\Users\ugrys\Desktop\SanalLab\app\main.py:65: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv\Lib\site-packages\fastapi\applications.py:4495
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\fastapi\applications.py:4495: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)
+
+tests/test_auth.py::test_login_success
+tests/test_auth.py::test_login_failure_wrong_password
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\testclient.py:488: DeprecationWarning: Setting per-request cookies=<...> is being deprecated, because the expected behaviour on cookie persistence is ambiguous. Set cookies directly on the client instance instead.
+    return super().request(
+
+tests/test_auth.py::test_login_success
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\jwt\api_jwt.py:153: InsecureKeyLengthWarning: The HMAC key is 21 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+tests/test_auth.py::test_login_success
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\jwt\api_jwt.py:371: InsecureKeyLengthWarning: The HMAC key is 21 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+tests/test_auth.py::test_login_success
+tests/test_auth.py::test_login_failure_wrong_password
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+tests/test_auth.py::test_brute_force_rate_limit
+  c:\Users\ugrys\Desktop\SanalLab\.venv\Lib\site-packages\starlette\templating.py:161: DeprecationWarning: The `name` is not the first parameter anymore. The first parameter should be the `Request` instance.
+  Replace `TemplateResponse(name, {"request": request})` by `TemplateResponse(request, name)`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_auth.py::test_login_success - assert 200 == 303
+ERROR tests/test_auth.py::test_login_success - PermissionError: [WinError 32]...
+ERROR tests/test_auth.py::test_login_failure_wrong_password - PermissionError...
+ERROR tests/test_auth.py::test_brute_force_rate_limit - PermissionError: [Win...
+============= 1 failed, 2 passed, 17 warnings, 3 errors in 2.84s ==============
