@@ -1,12 +1,8 @@
-import pytest
 import sys
+import subprocess
 
 if __name__ == '__main__':
     with open('test_out.txt', 'w', encoding='utf-8') as f:
         # Redirect stdout and stderr
-        # pytest.main overrides sys.stdout, so we pass it as an argument or just run it via subprocess
-        pass
-
-import subprocess
-with open('test_out.txt', 'w', encoding='utf-8') as f:
-    subprocess.run([sys.executable, "-m", "pytest", "tests/", "-v", "--tb=short", "--disable-warnings"], stdout=f, stderr=subprocess.STDOUT)
+        # We run pytest via subprocess to capture all output
+        subprocess.run([sys.executable, "-m", "pytest", "tests/", "-v", "--tb=short", "--disable-warnings"], stdout=f, stderr=subprocess.STDOUT)

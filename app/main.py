@@ -225,9 +225,14 @@ async def sanal_lab_logout(request: Request):
 # SECURE LAB ROUTES
 # -------------------------------------------------------------
 
-@app.get("/sanal-lab", dependencies=[Depends(get_current_user_payload)])
+@app.get("/sanal-lab")
 @limiter.limit(settings.RATE_LIMIT_GLOBAL)
 async def sanal_lab_index(request: Request):
+    try:
+        user_payload = get_current_user_payload(request)
+    except HTTPException:
+        return RedirectResponse(url="/sanal-lab-login", status_code=303)
+
     first_exp = next(iter(REGISTRY.values()), None)
     if first_exp:
         return RedirectResponse(url=f"/sanal-lab/{getattr(first_exp, 'id', '')}")

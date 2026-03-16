@@ -1,8 +1,18 @@
 {
-  "venvPath": "c:/Users/ugrys/Desktop/SanalLab",
+  "venvPath": ".",
   "venv": ".venv",
   "pythonVersion": "3.13",
   "typeCheckingMode": "basic",
+  "include": [
+    ".",
+    "app",
+    "tests"
+  ],
+  "exclude": [
+    ".venv",
+    ".venv_new",
+    "**/__pycache__"
+  ],
   "executionEnvironments": [
     {
       "root": ".",
@@ -10,5 +20,6 @@
         "."
       ]
     }
-  ]
+  ],
+  "reportMissingModuleSource": "none"
 }
